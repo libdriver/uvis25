@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['uvis25_5fbool_5ffalse_304',['UVIS25_BOOL_FALSE',['../group__uvis25__base__driver.html#ggadaea0d7e71b22000276810e2e8456334ace91b3b6c03f14a6b02f88f96e9d3fb4',1,'driver_uvis25.h']]],
+  ['uvis25_5fbool_5ftrue_305',['UVIS25_BOOL_TRUE',['../group__uvis25__base__driver.html#ggadaea0d7e71b22000276810e2e8456334a5b6c81818733aa3fdeae136845343e0d',1,'driver_uvis25.h']]],
+  ['uvis25_5fboot_5fnormal_5fmode_306',['UVIS25_BOOT_NORMAL_MODE',['../group__uvis25__base__driver.html#gga6a6182e9bb079d102d72ef1b52372943a9b8bdd185da32d0bd961fb580461343c',1,'driver_uvis25.h']]],
+  ['uvis25_5fboot_5freboot_5fmemory_5fcontent_307',['UVIS25_BOOT_REBOOT_MEMORY_CONTENT',['../group__uvis25__base__driver.html#gga6a6182e9bb079d102d72ef1b52372943a2b34c6696afce56d18ff4f89dc17da1c',1,'driver_uvis25.h']]],
+  ['uvis25_5finterface_5fiic_308',['UVIS25_INTERFACE_IIC',['../group__uvis25__base__driver.html#gga0149d0b7ecb2b7491224bc0adae5924dabd53469b589e24b427d84d7f90475a8c',1,'driver_uvis25.h']]],
+  ['uvis25_5finterface_5fspi_309',['UVIS25_INTERFACE_SPI',['../group__uvis25__base__driver.html#gga0149d0b7ecb2b7491224bc0adae5924da048c6494832d7b311ff4f01e729a42b4',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5factive_310',['UVIS25_INTERRUPT_ACTIVE',['../group__uvis25__interrupt__driver.html#ggaa4ca1b5e3a2d67d517d6a45d591f88b7aace7bd8609baf56b3b66dc14e0893cb0',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5factive_5flevel_5fhigher_311',['UVIS25_INTERRUPT_ACTIVE_LEVEL_HIGHER',['../group__uvis25__interrupt__driver.html#gga2c951fb5a6d7332f5490cc7c6b1f2920ab52ab4e37003f3ae19de51f592a1777a',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5factive_5flevel_5flower_312',['UVIS25_INTERRUPT_ACTIVE_LEVEL_LOWER',['../group__uvis25__interrupt__driver.html#gga2c951fb5a6d7332f5490cc7c6b1f2920a397dac9f04c028035cabd2d49a75bf83',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5fhigher_313',['UVIS25_INTERRUPT_HIGHER',['../group__uvis25__interrupt__driver.html#ggaa4ca1b5e3a2d67d517d6a45d591f88b7a5e29a4048eb88ed61dbb67e7466a1b5c',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5flower_314',['UVIS25_INTERRUPT_LOWER',['../group__uvis25__interrupt__driver.html#ggaa4ca1b5e3a2d67d517d6a45d591f88b7a03b2d2420ec50bdddfe8c3ffa5a75ac1',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5fpin_5ftype_5fopen_5fdrain_315',['UVIS25_INTERRUPT_PIN_TYPE_OPEN_DRAIN',['../group__uvis25__interrupt__driver.html#gga15b24acea2c96aa56ced94ebf7bfb92ea06ca4376652820e5f1c18d19c0e1fad1',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5fpin_5ftype_5fpush_5fpull_316',['UVIS25_INTERRUPT_PIN_TYPE_PUSH_PULL',['../group__uvis25__interrupt__driver.html#gga15b24acea2c96aa56ced94ebf7bfb92ea0d68be9bd02ff0186a38a0a8f001019d',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5ftype_5fdata_5fready_317',['UVIS25_INTERRUPT_TYPE_DATA_READY',['../group__uvis25__interrupt__driver.html#ggafcf4177d56425bb8717cab00292e34f7a3e35b9c43b56fb87ce3c523f7f90397c',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5ftype_5fuv_5findex_5fhigh_318',['UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH',['../group__uvis25__interrupt__driver.html#ggafcf4177d56425bb8717cab00292e34f7a33bc3053fab5631a2622f8eeeab23090',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5ftype_5fuv_5findex_5fhigh_5flow_319',['UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH_LOW',['../group__uvis25__interrupt__driver.html#ggafcf4177d56425bb8717cab00292e34f7a15f6ad00310b7627099ba9e2f65e3218',1,'driver_uvis25.h']]],
+  ['uvis25_5finterrupt_5ftype_5fuv_5findex_5flow_320',['UVIS25_INTERRUPT_TYPE_UV_INDEX_LOW',['../group__uvis25__interrupt__driver.html#ggafcf4177d56425bb8717cab00292e34f7a96105b8ec147db52960589ddeb5700b1',1,'driver_uvis25.h']]],
+  ['uvis25_5fspi_5fwire_5f3_321',['UVIS25_SPI_WIRE_3',['../group__uvis25__base__driver.html#ggab6a4ccbbd5e8daae658728e0d77e950fa5759069675ab6cc5f96e0e534348d997',1,'driver_uvis25.h']]],
+  ['uvis25_5fspi_5fwire_5f4_322',['UVIS25_SPI_WIRE_4',['../group__uvis25__base__driver.html#ggab6a4ccbbd5e8daae658728e0d77e950fa9627b03e532643244bdf1291532b6b78',1,'driver_uvis25.h']]]
+];
