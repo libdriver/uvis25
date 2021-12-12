@@ -4,7 +4,7 @@
 
 ## LibDriver UVIS25
 
-[English](/README.md) | [ 简体中文](/README_CH.md)
+[English](/README.md) | [ 简体中文](/README_zh-Hans.md) | [繁體中文](/README_zh-Hant.md)
 
 UVIS25是一种数字紫外线指数传感器，能够准确测量太阳光紫外线辐射指数。它包括传感元件和混合信号ASIC并通过IIC和SPI提供紫外指数数据。UVIS25使用一种专门的技术来实现UV指数的最大精度测量，无需专用算法计算紫外指数，无需在客户生产线上进行校准。设备可以配置为生成基于阈值交叉或当生成一组新数据时的事件。UVIS25有一个完整的模具LGA包装（LGA）。它保证在一个小时内运行温度范围从-20°C至+85 °C.包是透明的，允许外部太阳辐射到达传感器内部。
 
@@ -198,7 +198,7 @@ return 0;
 
 ### 版权
 
-版权(C) LibDriver 2015-2021 版权所有
+版权 (c) 2015 - 现在 LibDriver 版权所有
 
 MIT 许可证（MIT）
 
