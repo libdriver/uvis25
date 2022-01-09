@@ -1,10 +1,12 @@
+[English](/README.md) | [ 简体中文](/README_zh-Hans.md) | [繁體中文](/README_zh-Hant.md)
+
 <div align=center>
 <img src="/doc/image/logo.png"/>
 </div>
 
 ## LibDriver UVIS25
 
-[English](/README.md) | [ 简体中文](/README_zh-Hans.md) | [繁體中文](/README_zh-Hant.md)
+[![API](https://img.shields.io/badge/api-reference-blue)](https://www.libdriver.com/docs/uvis25/index.html) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](/LICENSE)
 
 The UVIS25 is a digital UV index sensor able to provide an accurate measurement of the ultraviolet radiation index (UVI) from sunlight. It includes a sensing element and a mixed signal ASIC to provide the UV index data through I2C and SPI interfaces.
 A dedicated technology has been developed to achieve the greatest accuracy for UV index measurements. The UVIS25 allows the measurement of the UV index, without the need for a dedicated algorithm to calculate the UV index and without specific calibrations at the customer manufacturing line. The device can be configured to generate interrupt events based on a threshold crossing or when a new set of data is generated. The event is available in a register as well as on a dedicated pin. The UVIS25 is available in a full-mold LGA package (LGA). It is guaranteed to operate over a temperature range extending from -20 °C to +85 °C. The package is transparent to allow external solar radiation to reach the sensing element.
