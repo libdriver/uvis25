@@ -380,7 +380,7 @@ uint8_t uvis25(uint8_t argc, char **argv)
                     return 5;
                 }
                 times = atoi(argv[3]);
-                g_gpio_irq = uvis25_interface_test_irq_handler;
+                g_gpio_irq = uvis25_interrupt_test_irq_handler;
                 res = gpio_interrupt_init();
                 if (res)
                 {
@@ -470,7 +470,7 @@ uint8_t uvis25(uint8_t argc, char **argv)
                     return 5;
                 }
                 times = atoi(argv[3]);
-                g_gpio_irq = uvis25_interface_irq_handler;
+                g_gpio_irq = uvis25_interrupt_irq_handler;
                 res = gpio_interrupt_init();
                 if (res)
                 {

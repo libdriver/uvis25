@@ -70,7 +70,7 @@ extern "C"{
  *         - 1 run failed
  * @note   none
  */
-uint8_t uvis25_interface_irq_handler(void);
+uint8_t uvis25_interrupt_irq_handler(void);
 
 /**
  * @brief     interrupt example init

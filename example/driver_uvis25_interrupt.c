@@ -46,7 +46,7 @@ static uvis25_handle_t gs_handle;        /**< uvis25 handle */
  *         - 1 run failed
  * @note   none
  */
-uint8_t uvis25_interface_irq_handler(void)
+uint8_t uvis25_interrupt_irq_handler(void)
 {
     if (uvis25_irq_handler(&gs_handle))
     {

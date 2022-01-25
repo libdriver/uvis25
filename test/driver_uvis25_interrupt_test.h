@@ -56,7 +56,7 @@ extern "C"{
  *         - 1 run failed
  * @note   none
  */
-uint8_t uvis25_interface_test_irq_handler(void);
+uint8_t uvis25_interrupt_test_irq_handler(void);
 
 /**
  * @brief     interrupt test
