@@ -35,8 +35,8 @@
  * </table>
  */
 
-#ifndef _DRIVER_UVIS25_H_
-#define _DRIVER_UVIS25_H_
+#ifndef DRIVER_UVIS25_H
+#define DRIVER_UVIS25_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -163,9 +163,9 @@ typedef struct uvis25_handle_s
     uint8_t (*spi_deinit)(void);                                                        /**< point to a spi_deinit function address */
     uint8_t (*spi_read)(uint8_t reg, uint8_t *buf, uint16_t len);                       /**< point to a spi_read function address */
     uint8_t (*spi_write)(uint8_t reg, uint8_t *buf, uint16_t len);                      /**< point to a spi_write function address */
-    uint8_t (*receive_callback)(uint8_t type);                                          /**< point to a receive_callback function address */
+    void (*receive_callback)(uint8_t type);                                             /**< point to a receive_callback function address */
     void (*delay_ms)(uint32_t ms);                                                      /**< point to a delay_ms function address */
-    uint16_t (*debug_print)(char *fmt, ...);                                            /**< point to a debug_print function address */
+    void (*debug_print)(const char *const fmt, ...);                                    /**< point to a debug_print function address */
     uint8_t inited;                                                                     /**< inited flag */
     uint8_t iic_spi;                                                                    /**< iic spi interface type */
 } uvis25_handle_t;
@@ -620,7 +620,7 @@ uint8_t uvis25_get_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
 /**
  * @brief     set the interrupt type
  * @param[in] *handle points to a uvis25 handle structure
- * @param[in] interrupt is the interrupt type
+ * @param[in] type is the interrupt type
  * @return    status code
  *            - 0 success
  *            - 1 set interrupt type failed
@@ -628,12 +628,12 @@ uint8_t uvis25_get_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
  *            - 3 handle is not initialized
  * @note      none
  */
-uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type_t interrupt);
+uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type_t type);
 
 /**
  * @brief      get the interrupt type
  * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *interrupt points to a interrupt type buffer
+ * @param[out] *type points to a interrupt type buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt type failed
@@ -641,7 +641,7 @@ uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type
  *             - 3 handle is not initialized
  * @note       none
  */
-uint8_t uvis25_get_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type_t *interrupt);
+uint8_t uvis25_get_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type_t *type);
 
 /**
  * @brief     enable or disable the chip interrupt

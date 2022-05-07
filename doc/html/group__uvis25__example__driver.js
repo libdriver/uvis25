@@ -22,7 +22,7 @@ var group__uvis25__example__driver =
     [ "uvis25_basic_init", "group__uvis25__example__driver.html#gab96b020370dcb08170b64d1a46372409", null ],
     [ "uvis25_basic_read", "group__uvis25__example__driver.html#gabe88b487d90b206f1bdccc1e050af18d", null ],
     [ "uvis25_interrupt_deinit", "group__uvis25__example__driver.html#ga8b0fdcd80c2ba4b11e57f285aff5e644", null ],
-    [ "uvis25_interrupt_init", "group__uvis25__example__driver.html#ga819605cf2756888af995a9d52ac7aa95", null ],
+    [ "uvis25_interrupt_init", "group__uvis25__example__driver.html#ga7bed1467e3b7ecd576dceb35d075aa64", null ],
     [ "uvis25_interrupt_irq_handler", "group__uvis25__example__driver.html#ga3701957a71f613e2309c4db84b659634", null ],
     [ "uvis25_interrupt_read", "group__uvis25__example__driver.html#ga80ec5ecc58c06aea51c0ba49c3c4c311", null ],
     [ "uvis25_shot_deinit", "group__uvis25__example__driver.html#gab2ad99e86711cdb9cb37004f92cae3bd", null ],

@@ -35,8 +35,8 @@
  * </table>
  */
 
-#ifndef _DRIVER_UVIS25_REGISTER_TEST_H_
-#define _DRIVER_UVIS25_REGISTER_TEST_H_
+#ifndef DRIVER_UVIS25_REGISTER_TEST_H
+#define DRIVER_UVIS25_REGISTER_TEST_H
 
 #include "driver_uvis25_interface.h"
 
