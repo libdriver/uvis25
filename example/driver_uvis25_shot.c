@@ -49,7 +49,7 @@ static uvis25_handle_t gs_handle;        /**< uvis25 handle */
  */
 uint8_t uvis25_shot_init(uvis25_interface_t interface)
 {
-    volatile uint8_t res;
+    uint8_t res;
     
     /* link functions */
     DRIVER_UVIS25_LINK_INIT(&gs_handle, uvis25_handle_t);
@@ -67,7 +67,7 @@ uint8_t uvis25_shot_init(uvis25_interface_t interface)
     
     /* set interface */
     res = uvis25_set_interface(&gs_handle, interface);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interface failed.\n");
        
@@ -76,7 +76,7 @@ uint8_t uvis25_shot_init(uvis25_interface_t interface)
     
     /* uvis25 init */
     res = uvis25_init(&gs_handle);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: init failed.\n");
        
@@ -85,50 +85,50 @@ uint8_t uvis25_shot_init(uvis25_interface_t interface)
     
     /* set default iic */
     res = uvis25_set_iic(&gs_handle, UVIS25_SHOT_DEFAULT_IIC);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set iic failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set default spi wire */
     res = uvis25_set_spi_wire(&gs_handle, UVIS25_SHOT_DEFAULT_SPI_WIRE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set spi wire failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set default boot */
     res = uvis25_set_boot(&gs_handle, UVIS25_SHOT_DEFAULT_BOOT_MODE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set boot failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set default block data update */
     res = uvis25_set_block_data_update(&gs_handle, UVIS25_SHOT_DEFAULT_BLOCK_DATA_UPDATE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set block data update failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set default interrupt */
     res = uvis25_set_interrupt(&gs_handle, UVIS25_BOOL_FALSE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interrupt failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
@@ -146,10 +146,10 @@ uint8_t uvis25_shot_init(uvis25_interface_t interface)
  */
 uint8_t uvis25_shot_read(float *uv)
 {
-    volatile uint8_t raw;
+    uint8_t raw;
     
     /* single read */
-    if (uvis25_single_read(&gs_handle, (uint8_t *)&raw, uv))
+    if (uvis25_single_read(&gs_handle, (uint8_t *)&raw, uv) != 0)
     {
         return 1;
     }
@@ -169,7 +169,7 @@ uint8_t uvis25_shot_read(float *uv)
 uint8_t uvis25_shot_deinit(void)
 {
     /* close uvis25 */
-    if (uvis25_deinit(&gs_handle))
+    if (uvis25_deinit(&gs_handle) != 0)
     {
         return 1;
     }

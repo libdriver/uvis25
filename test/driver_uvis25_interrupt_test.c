@@ -48,7 +48,7 @@ static uvis25_handle_t gs_handle;        /**< uvis25 handle */
  */
 uint8_t uvis25_interrupt_test_irq_handler(void)
 {
-    if (uvis25_irq_handler(&gs_handle))
+    if (uvis25_irq_handler(&gs_handle) != 0)
     {
         return 1;
     }
@@ -70,8 +70,8 @@ uint8_t uvis25_interrupt_test_irq_handler(void)
  */
 uint8_t uvis25_interrupt_test(uvis25_interface_t interface, float threshold, uint32_t times)
 {
-    volatile uint8_t res, reg;
-    volatile uint32_t i;
+    uint8_t res, reg;
+    uint32_t i;
     uvis25_info_t info;
     
     /* link functions */
@@ -90,7 +90,7 @@ uint8_t uvis25_interrupt_test(uvis25_interface_t interface, float threshold, uin
 
     /* get information */
     res = uvis25_info(&info);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: get info failed.\n");
        
@@ -112,7 +112,7 @@ uint8_t uvis25_interrupt_test(uvis25_interface_t interface, float threshold, uin
     
     /* set interface */
     res = uvis25_set_interface(&gs_handle, interface);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interface failed.\n");
        
@@ -121,7 +121,7 @@ uint8_t uvis25_interrupt_test(uvis25_interface_t interface, float threshold, uin
     
     /* uvis25 init */
     res = uvis25_init(&gs_handle);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: init failed.\n");
        
@@ -131,175 +131,175 @@ uint8_t uvis25_interrupt_test(uvis25_interface_t interface, float threshold, uin
     /* start interrupt test */
     uvis25_interface_debug_print("uvis25: start interrupt test.\n");
     res = uvis25_set_iic(&gs_handle, UVIS25_BOOL_TRUE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set iic failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set spi wire 4 */
     res = uvis25_set_spi_wire(&gs_handle, UVIS25_SPI_WIRE_4);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set spi wire failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }  
     
     /* set normal mode */
     res = uvis25_set_boot(&gs_handle, UVIS25_BOOT_NORMAL_MODE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set boot failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* disable block data update */
     res = uvis25_set_block_data_update(&gs_handle, UVIS25_BOOL_FALSE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set block data update failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set interrupt active level lower */
     res = uvis25_set_interrupt_active_level(&gs_handle, UVIS25_INTERRUPT_ACTIVE_LEVEL_LOWER);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interrupt active level failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set push pull type */
     res = uvis25_set_interrupt_pin_type(&gs_handle, UVIS25_INTERRUPT_PIN_TYPE_PUSH_PULL);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interrupt pin type failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set uv index low */
     res = uvis25_set_interrupt_type(&gs_handle, UVIS25_INTERRUPT_TYPE_UV_INDEX_LOW);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interrupt type failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* enable interrupt */
     res = uvis25_set_interrupt(&gs_handle, UVIS25_BOOL_TRUE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interrupt failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* enable latch interrupt */
     res = uvis25_set_latch_interrupt(&gs_handle, UVIS25_BOOL_TRUE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set latch interrupt failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* enable interrupt low threshold */
     res = uvis25_set_interrupt_low_threshold(&gs_handle, UVIS25_BOOL_TRUE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interrupt low threshold failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* enable interrupt high threshold */
     res = uvis25_set_interrupt_high_threshold(&gs_handle, UVIS25_BOOL_TRUE);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set interrupt high threshold failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* threshold convert to register */
     res = uvis25_threshold_convert_to_register(&gs_handle,  threshold, (uint8_t *)&reg);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: threshold convert to register failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* set threshold */
     res = uvis25_set_threshold(&gs_handle, reg);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: set threshold failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
     
     /* start continuous read */
     res = uvis25_start_continuous_read(&gs_handle);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: start continuous read failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
-    for (i=0; i<times; i++)
+    for (i = 0; i < times; i++)
     {
-        volatile uint8_t raw;
-        volatile float uv;
+        uint8_t raw;
+        float uv;
         
         uvis25_interface_delay_ms(2000);
     
         /* continuous read */
         res = uvis25_continuous_read(&gs_handle, (uint8_t *)&raw, (float *)&uv);
-        if (res)
+        if (res != 0)
         {
             uvis25_interface_debug_print("uvis25: read failed.\n");
-            uvis25_deinit(&gs_handle);
+            (void)uvis25_deinit(&gs_handle);
             
             return 1;
         }
-        uvis25_interface_debug_print("uvis25: uv %0.4f is %s than threshold.\n", uv, uv>threshold?(char *)"higher":(char *)"lower");
+        uvis25_interface_debug_print("uvis25: uv %0.4f is %s than threshold.\n", uv, uv>threshold ? "higher": "lower");
     }
 
     /* stop continuous read */
     res = uvis25_stop_continuous_read(&gs_handle);
-    if (res)
+    if (res != 0)
     {
         uvis25_interface_debug_print("uvis25: stop continuous read failed.\n");
-        uvis25_deinit(&gs_handle);
+        (void)uvis25_deinit(&gs_handle);
         
         return 1;
     }
 
     /* finish interrupt test */
     uvis25_interface_debug_print("uvis25: finish interrupt test.\n");
-    uvis25_deinit(&gs_handle);
+    (void)uvis25_deinit(&gs_handle);
     
     return 0;
 }

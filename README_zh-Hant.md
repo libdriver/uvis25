@@ -1,4 +1,4 @@
-[English](/README.md) | [ 简体中文](/README_zh-Hans.md) | [繁體中文](/README_zh-Hant.md)
+[English](/README.md) | [ 简体中文](/README_zh-Hans.md) | [繁體中文](/README_zh-Hant.md) | [日本語](/README_ja.md) | [Deutsch](/README_de.md) | [한국어](/README_ko.md)
 
 <div align=center>
 <img src="/doc/image/logo.png"/>
@@ -6,11 +6,11 @@
 
 ## LibDriver UVIS25
 
-[![API](https://img.shields.io/badge/api-reference-blue)](https://www.libdriver.com/docs/uvis25/index.html) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](/LICENSE)
+[![MISRA](https://img.shields.io/badge/misra-compliant-brightgreen.svg)](/misra/README.md) [![API](https://img.shields.io/badge/api-reference-blue.svg)](https://www.libdriver.com/docs/uvis25/index.html) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](/LICENSE)
 
 UVIS25是一種數字紫外線指數傳感器，能夠準確測量太陽光紫外線輻射指數。它包括傳感元件和混合信號ASIC並通過IIC和SPI提供紫外指數數據。 UVIS25使用一種專門的技術來實現UV指數的最大精度測量，無需專用算法計算紫外指數，無需在客戶生產線上進行校準。設備可以配置為生成基於閾值交叉或當生成一組新數據時的事件。 UVIS25有一個完整的模具LGA包裝（LGA）。它保證在一個小時內運行溫度範圍從-20°C至+85 °C.包是透明的，允許外部太陽輻射到達傳感器內部。
 
-LibDriver UVIS25是LibDriver推出的UVIS25的全功能驅動，該驅動提供紫外線指數連續讀取、紫外線指數單次讀取，紫外線指數閾值中斷等功能。
+LibDriver UVIS25是LibDriver推出的UVIS25的全功能驅動，該驅動提供紫外線指數連續讀取、紫外線指數單次讀取，紫外線指數閾值中斷等功能並且它符合MISRA標準。
 
 ### 目錄
 
@@ -57,7 +57,7 @@ uint32_t i;
 float uv;
 
 res = uvis25_basic_init(UVIS25_INTERFACE_IIC);
-if (res)
+if (res != 0)
 {
     return 1;
 }
@@ -68,9 +68,9 @@ for (i = 0; i < 3; i++)
 {
     uvis25_interface_delay_ms(2000);
     res = uvis25_basic_read((float *)&uv);
-    if (res)
+    if (res != 0)
     {
-        uvis25_basic_deinit();
+        (void)uvis25_basic_deinit();
 
         return 1;
     }
@@ -82,7 +82,7 @@ for (i = 0; i < 3; i++)
 
 ...
 
-uvis25_basic_deinit();
+(void)uvis25_basic_deinit();
 
 return 0;
 ```
@@ -95,7 +95,7 @@ uint8_t i;
 float uv;
 
 res = uvis25_shot_init(UVIS25_INTERFACE_IIC);
-if (res)
+if (res != 0)
 {
     return 1;
 }
@@ -106,9 +106,9 @@ for (i=0; i<times; i++)
 {
     uvis25_interface_delay_ms(2000);
     res = uvis25_shot_read((float *)&uv);
-    if (res)
+    if (res != 0)
     {
-        uvis25_shot_deinit();
+        (void)uvis25_shot_deinit();
 
         return 1;
     }
@@ -120,7 +120,7 @@ for (i=0; i<times; i++)
 
 ...
 
-uvis25_shot_deinit();
+(void)uvis25_shot_deinit();
 
 return 0;
 ```
@@ -139,14 +139,14 @@ void gpio_irq(void)
 }
 
 res = gpio_interrupt_init();
-if (res)
+if (res != 0)
 {
     return 1;
 }
 res = uvis25_interrupt_init(UVIS25_INTERFACE_IIC, UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH_LOW, 1.2f);
-if (res)
+if (res != 0)
 {
-    gpio_interrupt_deinit();
+    (void)gpio_interrupt_deinit();
 
     return 1;
 }
@@ -158,10 +158,10 @@ for (i = 0; i < 3; i++)
 {
     uvis25_interface_delay_ms(2000);
     res = uvis25_interrupt_read((float *)&uv);
-    if (res)
+    if (res != 0)
     {
-        uvis25_interrupt_deinit();
-        gpio_interrupt_deinit();
+        (void)uvis25_interrupt_deinit();
+        (void)gpio_interrupt_deinit();
 
         return 1;
     }
@@ -169,7 +169,7 @@ for (i = 0; i < 3; i++)
     
     ....
     
-    if (g_flag)
+    if (g_flag != 0)
     {
         uvis25_interface_debug_print("uvis25: find interrupt.\n");
 
@@ -182,8 +182,8 @@ for (i = 0; i < 3; i++)
 
 ...
 
-uvis25_interrupt_deinit();
-gpio_interrupt_deinit();;
+(void)uvis25_interrupt_deinit();
+(void)gpio_interrupt_deinit();;
 
 return 0;
 ```

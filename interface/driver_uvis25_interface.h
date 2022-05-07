@@ -35,8 +35,8 @@
  * </table>
  */
 
-#ifndef _DRIVER_UVIS25_INTERFACE_H_
-#define _DRIVER_UVIS25_INTERFACE_H_
+#ifndef DRIVER_UVIS25_INTERFACE_H
+#define DRIVER_UVIS25_INTERFACE_H
 
 #include "driver_uvis25.h"
 
@@ -147,19 +147,16 @@ void uvis25_interface_delay_ms(uint32_t ms);
 /**
  * @brief     interface print format data
  * @param[in] fmt is the format data
- * @return    length of the send data
  * @note      none
  */
-uint16_t uvis25_interface_debug_print(char *fmt, ...);
+void uvis25_interface_debug_print(const char *const fmt, ...);
 
 /**
  * @brief     interface receive callback
  * @param[in] type is the interrupt type
- * @return    status code
- *            - 0 success
  * @note      none
  */
-uint8_t uvis25_interface_receive_callback(uint8_t type);
+void uvis25_interface_receive_callback(uint8_t type);
 
 /**
  * @}

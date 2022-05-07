@@ -160,22 +160,19 @@ void uvis25_interface_delay_ms(uint32_t ms)
 /**
  * @brief     interface print format data
  * @param[in] fmt is the format data
- * @return    length of the send data
  * @note      none
  */
-uint16_t uvis25_interface_debug_print(char *fmt, ...)
+void uvis25_interface_debug_print(const char *const fmt, ...)
 {
-    return 0;
+
 }
 
 /**
  * @brief     interface receive callback
  * @param[in] type is the interrupt type
- * @return    status code
- *            - 0 success
  * @note      none
  */
-uint8_t uvis25_interface_receive_callback(uint8_t type)
+void uvis25_interface_receive_callback(uint8_t type)
 {
     switch (type)
     {
@@ -199,9 +196,9 @@ uint8_t uvis25_interface_receive_callback(uint8_t type)
         }
         default :
         {
+            uvis25_interface_debug_print("uvis25: unknown code.\n");
+            
             break;
         }
     }
-    
-    return 0;
 }

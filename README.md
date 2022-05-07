@@ -1,4 +1,4 @@
-[English](/README.md) | [ 简体中文](/README_zh-Hans.md) | [繁體中文](/README_zh-Hant.md)
+[English](/README.md) | [ 简体中文](/README_zh-Hans.md) | [繁體中文](/README_zh-Hant.md) | [日本語](/README_ja.md) | [Deutsch](/README_de.md) | [한국어](/README_ko.md)
 
 <div align=center>
 <img src="/doc/image/logo.png"/>
@@ -6,12 +6,11 @@
 
 ## LibDriver UVIS25
 
-[![API](https://img.shields.io/badge/api-reference-blue)](https://www.libdriver.com/docs/uvis25/index.html) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](/LICENSE)
+[![MISRA](https://img.shields.io/badge/misra-compliant-brightgreen.svg)](/misra/README.md) [![API](https://img.shields.io/badge/api-reference-blue.svg)](https://www.libdriver.com/docs/uvis25/index.html) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](/LICENSE)
 
-The UVIS25 is a digital UV index sensor able to provide an accurate measurement of the ultraviolet radiation index (UVI) from sunlight. It includes a sensing element and a mixed signal ASIC to provide the UV index data through I2C and SPI interfaces.
-A dedicated technology has been developed to achieve the greatest accuracy for UV index measurements. The UVIS25 allows the measurement of the UV index, without the need for a dedicated algorithm to calculate the UV index and without specific calibrations at the customer manufacturing line. The device can be configured to generate interrupt events based on a threshold crossing or when a new set of data is generated. The event is available in a register as well as on a dedicated pin. The UVIS25 is available in a full-mold LGA package (LGA). It is guaranteed to operate over a temperature range extending from -20 °C to +85 °C. The package is transparent to allow external solar radiation to reach the sensing element.
+The UVIS25 is a digital UV index sensor able to provide an accurate measurement of the ultraviolet radiation index (UVI) from sunlight. It includes a sensing element and a mixed signal ASIC to provide the UV index data through I2C and SPI interfaces.A dedicated technology has been developed to achieve the greatest accuracy for UV index measurements. The UVIS25 allows the measurement of the UV index, without the need for a dedicated algorithm to calculate the UV index and without specific calibrations at the customer manufacturing line. The device can be configured to generate interrupt events based on a threshold crossing or when a new set of data is generated. The event is available in a register as well as on a dedicated pin. The UVIS25 is available in a full-mold LGA package (LGA). It is guaranteed to operate over a temperature range extending from -20 °C to +85 °C. The package is transparent to allow external solar radiation to reach the sensing element.
 
-LibDriver UVIS25 is the full function driver of UVIS25 launched by LibDriver.It provides continuous reading of UV index, single reading of UV index, interruption of UV index threshold and other functions.
+LibDriver UVIS25 is the full function driver of UVIS25 launched by LibDriver.It provides continuous reading of UV index, single reading of UV index, interruption of UV index threshold and other functions. LibDriver is MISRA compliant.
 
 ### Table of Contents
 
@@ -58,7 +57,7 @@ uint32_t i;
 float uv;
 
 res = uvis25_basic_init(UVIS25_INTERFACE_IIC);
-if (res)
+if (res != 0)
 {
     return 1;
 }
@@ -69,9 +68,9 @@ for (i = 0; i < 3; i++)
 {
     uvis25_interface_delay_ms(2000);
     res = uvis25_basic_read((float *)&uv);
-    if (res)
+    if (res != 0)
     {
-        uvis25_basic_deinit();
+        (void)uvis25_basic_deinit();
 
         return 1;
     }
@@ -83,7 +82,7 @@ for (i = 0; i < 3; i++)
 
 ...
 
-uvis25_basic_deinit();
+(void)uvis25_basic_deinit();
 
 return 0;
 ```
@@ -96,7 +95,7 @@ uint8_t i;
 float uv;
 
 res = uvis25_shot_init(UVIS25_INTERFACE_IIC);
-if (res)
+if (res != 0)
 {
     return 1;
 }
@@ -107,9 +106,9 @@ for (i=0; i<times; i++)
 {
     uvis25_interface_delay_ms(2000);
     res = uvis25_shot_read((float *)&uv);
-    if (res)
+    if (res != 0)
     {
-        uvis25_shot_deinit();
+        (void)uvis25_shot_deinit();
 
         return 1;
     }
@@ -121,7 +120,7 @@ for (i=0; i<times; i++)
 
 ...
 
-uvis25_shot_deinit();
+(void)uvis25_shot_deinit();
 
 return 0;
 ```
@@ -140,14 +139,14 @@ void gpio_irq(void)
 }
 
 res = gpio_interrupt_init();
-if (res)
+if (res != 0)
 {
     return 1;
 }
 res = uvis25_interrupt_init(UVIS25_INTERFACE_IIC, UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH_LOW, 1.2f);
-if (res)
+if (res != 0)
 {
-    gpio_interrupt_deinit();
+    (void)gpio_interrupt_deinit();
 
     return 1;
 }
@@ -159,10 +158,10 @@ for (i = 0; i < 3; i++)
 {
     uvis25_interface_delay_ms(2000);
     res = uvis25_interrupt_read((float *)&uv);
-    if (res)
+    if (res != 0)
     {
-        uvis25_interrupt_deinit();
-        gpio_interrupt_deinit();
+        (void)uvis25_interrupt_deinit();
+        (void)gpio_interrupt_deinit();
 
         return 1;
     }
@@ -170,7 +169,7 @@ for (i = 0; i < 3; i++)
     
     ....
     
-    if (g_flag)
+    if (g_flag != 0)
     {
         uvis25_interface_debug_print("uvis25: find interrupt.\n");
 
@@ -183,8 +182,8 @@ for (i = 0; i < 3; i++)
 
 ...
 
-uvis25_interrupt_deinit();
-gpio_interrupt_deinit();;
+(void)uvis25_interrupt_deinit();
+(void)gpio_interrupt_deinit();;
 
 return 0;
 ```

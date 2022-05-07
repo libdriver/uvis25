@@ -78,11 +78,18 @@
  *             - 1 read failed
  * @note       none
  */
-static uint8_t _uvis25_iic_spi_read(uvis25_handle_t *handle, uint8_t reg, uint8_t *buf, uint16_t len)
+static uint8_t a_uvis25_iic_spi_read(uvis25_handle_t *handle, uint8_t reg, uint8_t *buf, uint16_t len)
 {
     if (handle->iic_spi == UVIS25_INTERFACE_IIC)                           /* iic interface */
     {
-        return handle->iic_read(UVIS25_IIC_ADDRESS, reg, buf, len);        /* read register */
+        if (handle->iic_read(UVIS25_IIC_ADDRESS, reg, buf, len) != 0)      /* read register */
+        {
+            return 1;                                                      /* return error */
+        }
+        else
+        {
+            return 0;                                                      /* success return 0 */
+        }
     }
     else                                                                   /* spi interface */
     {
@@ -92,7 +99,14 @@ static uint8_t _uvis25_iic_spi_read(uvis25_handle_t *handle, uint8_t reg, uint8_
         }
         reg |= 1 << 7;                                                     /* set read mdoe */
         
-        return handle->spi_read(reg, buf, len);                            /* read register */
+        if (handle->spi_read(reg, buf, len) != 0)                          /* read register */
+        {
+            return 1;                                                      /* return error */
+        }
+        else
+        {
+            return 0;                                                      /* success return 0 */
+        }
     }
 }
 
@@ -107,11 +121,18 @@ static uint8_t _uvis25_iic_spi_read(uvis25_handle_t *handle, uint8_t reg, uint8_
  *            - 1 write failed
  * @note      none
  */
-static uint8_t _uvis25_iic_spi_write(uvis25_handle_t *handle, uint8_t reg, uint8_t *buf, uint16_t len)
+static uint8_t a_uvis25_iic_spi_write(uvis25_handle_t *handle, uint8_t reg, uint8_t *buf, uint16_t len)
 {
     if (handle->iic_spi == UVIS25_INTERFACE_IIC)                            /* iic interface */
     {
-        return handle->iic_write(UVIS25_IIC_ADDRESS, reg, buf, len);        /* write register */
+        if (handle->iic_write(UVIS25_IIC_ADDRESS, reg, buf, len) != 0)      /* write register */
+        {
+            return 1;                                                       /* return error */
+        }
+        else
+        {
+            return 0;                                                       /* success return 0 */
+        }
     }
     else                                                                    /* spi interface */
     {
@@ -120,7 +141,14 @@ static uint8_t _uvis25_iic_spi_write(uvis25_handle_t *handle, uint8_t reg, uint8
             reg |= 1 << 6;                                                  /* set write more than 1 byte */
         }
         
-        return handle->spi_write(reg, buf, len);                            /* write register */
+        if (handle->spi_write(reg, buf, len) != 0)                          /* write register */
+        {
+            return 1;                                                       /* return error */
+        }
+        else
+        {
+            return 0;                                                       /* success return 0 */
+        }
     }
 }
 
@@ -135,14 +163,14 @@ static uint8_t _uvis25_iic_spi_write(uvis25_handle_t *handle, uint8_t reg, uint8
  */
 uint8_t uvis25_set_interface(uvis25_handle_t *handle, uvis25_interface_t interface) 
 {
-    if (handle == NULL)                 /* check handle */
+    if (handle == NULL)                          /* check handle */
     {
-        return 2;                       /* return error */
+        return 2;                                /* return error */
     }
     
-    handle->iic_spi = interface;        /* set interface */
+    handle->iic_spi = (uint8_t)interface;        /* set interface */
     
-    return 0;                           /* success return 0 */
+    return 0;                                    /* success return 0 */
 }
 
 /**
@@ -179,8 +207,8 @@ uint8_t uvis25_get_interface(uvis25_handle_t *handle, uvis25_interface_t *interf
  */
 uint8_t uvis25_set_block_data_update(uvis25_handle_t *handle, uvis25_bool_t enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                     /* check handle */
     {
@@ -191,8 +219,8 @@ uint8_t uvis25_set_block_data_update(uvis25_handle_t *handle, uvis25_bool_t enab
         return 3;                                                                           /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);          /* read ctrl reg1 */
-    if (res)                                                                                /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);         /* read ctrl reg1 */
+    if (res != 0)                                                                           /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                             /* read register failed */
        
@@ -201,7 +229,7 @@ uint8_t uvis25_set_block_data_update(uvis25_handle_t *handle, uvis25_bool_t enab
     prev &= ~(1 << 1);                                                                      /* clear enable bit */
     prev |= enable << 1;                                                                    /* set enable */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -217,8 +245,8 @@ uint8_t uvis25_set_block_data_update(uvis25_handle_t *handle, uvis25_bool_t enab
  */
 uint8_t uvis25_get_block_data_update(uvis25_handle_t *handle, uvis25_bool_t *enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -229,8 +257,8 @@ uint8_t uvis25_get_block_data_update(uvis25_handle_t *handle, uvis25_bool_t *ena
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);        /* read reg */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);       /* read reg */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read register failed */
        
@@ -254,8 +282,8 @@ uint8_t uvis25_get_block_data_update(uvis25_handle_t *handle, uvis25_bool_t *ena
  */
 uint8_t uvis25_set_boot(uvis25_handle_t *handle, uvis25_boot_mode_t mode)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                     /* check handle */
     {
@@ -266,8 +294,8 @@ uint8_t uvis25_set_boot(uvis25_handle_t *handle, uvis25_boot_mode_t mode)
         return 3;                                                                           /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);          /* read ctrl reg2 */
-    if (res)                                                                                /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);         /* read ctrl reg2 */
+    if (res != 0)                                                                           /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                             /* read register failed */
        
@@ -276,7 +304,7 @@ uint8_t uvis25_set_boot(uvis25_handle_t *handle, uvis25_boot_mode_t mode)
     prev &= ~(1 << 7);                                                                      /* clear boot mode bit */
     prev |= mode << 7;                                                                      /* set boot mode */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -292,8 +320,8 @@ uint8_t uvis25_set_boot(uvis25_handle_t *handle, uvis25_boot_mode_t mode)
  */
 uint8_t uvis25_get_boot(uvis25_handle_t *handle, uvis25_boot_mode_t *mode)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -304,8 +332,8 @@ uint8_t uvis25_get_boot(uvis25_handle_t *handle, uvis25_boot_mode_t *mode)
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);        /* read ctrl reg2 */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);       /* read ctrl reg2 */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read register failed */
        
@@ -329,8 +357,8 @@ uint8_t uvis25_get_boot(uvis25_handle_t *handle, uvis25_boot_mode_t *mode)
  */
 uint8_t uvis25_set_iic(uvis25_handle_t *handle, uvis25_bool_t enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                     /* check handle */
     {
@@ -341,8 +369,8 @@ uint8_t uvis25_set_iic(uvis25_handle_t *handle, uvis25_bool_t enable)
         return 3;                                                                           /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);          /* read ctrl reg2 */
-    if (res)                                                                                /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);         /* read ctrl reg2 */
+    if (res != 0)                                                                           /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                             /* read register failed */
        
@@ -351,7 +379,7 @@ uint8_t uvis25_set_iic(uvis25_handle_t *handle, uvis25_bool_t enable)
     prev &= ~(1 << 4);                                                                      /* clear iic enable bit */
     prev |= (!enable) << 4;                                                                 /* set iic enable */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -367,8 +395,8 @@ uint8_t uvis25_set_iic(uvis25_handle_t *handle, uvis25_bool_t enable)
  */
 uint8_t uvis25_get_iic(uvis25_handle_t *handle, uvis25_bool_t *enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -379,8 +407,8 @@ uint8_t uvis25_get_iic(uvis25_handle_t *handle, uvis25_bool_t *enable)
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);        /* read ctrl reg2 */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);       /* read ctrl reg2 */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read register failed */
        
@@ -404,8 +432,8 @@ uint8_t uvis25_get_iic(uvis25_handle_t *handle, uvis25_bool_t *enable)
  */
 uint8_t uvis25_set_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t wire)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                     /* check handle */
     {
@@ -416,8 +444,8 @@ uint8_t uvis25_set_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t wire)
         return 3;                                                                           /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);          /* read ctrl reg2 */
-    if (res)                                                                                /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);         /* read ctrl reg2 */
+    if (res != 0)                                                                           /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                             /* read register failed */
        
@@ -426,7 +454,7 @@ uint8_t uvis25_set_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t wire)
     prev &= ~(1 << 3);                                                                      /* clear wire bit */
     prev |= wire << 3;                                                                      /* set wire */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -442,8 +470,8 @@ uint8_t uvis25_set_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t wire)
  */
 uint8_t uvis25_get_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t *wire)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -454,8 +482,8 @@ uint8_t uvis25_get_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t *wire)
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);        /* read ctrl reg2 */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);       /* read ctrl reg2 */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read failed */
        
@@ -479,8 +507,8 @@ uint8_t uvis25_get_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t *wire)
  */
 uint8_t uvis25_set_interrupt_active_level(uvis25_handle_t *handle, uvis25_interrupt_active_level_t level)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                     /* check handle */
     {
@@ -491,8 +519,8 @@ uint8_t uvis25_set_interrupt_active_level(uvis25_handle_t *handle, uvis25_interr
         return 3;                                                                           /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);          /* read ctrl reg3 */
-    if (res)                                                                                /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);         /* read ctrl reg3 */
+    if (res != 0)                                                                           /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                             /* read failed */
        
@@ -501,7 +529,7 @@ uint8_t uvis25_set_interrupt_active_level(uvis25_handle_t *handle, uvis25_interr
     prev &= ~(1 << 7);                                                                      /* clear level bit */
     prev |= level << 7;                                                                     /* set level */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -517,8 +545,8 @@ uint8_t uvis25_set_interrupt_active_level(uvis25_handle_t *handle, uvis25_interr
  */
 uint8_t uvis25_get_interrupt_active_level(uvis25_handle_t *handle, uvis25_interrupt_active_level_t *level)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -529,8 +557,8 @@ uint8_t uvis25_get_interrupt_active_level(uvis25_handle_t *handle, uvis25_interr
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);        /* read ctrl reg3 */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);       /* read ctrl reg3 */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read failed */
        
@@ -554,8 +582,8 @@ uint8_t uvis25_get_interrupt_active_level(uvis25_handle_t *handle, uvis25_interr
  */
 uint8_t uvis25_set_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_pin_type_t pin_type)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                     /* check handle */
     {
@@ -566,8 +594,8 @@ uint8_t uvis25_set_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
         return 3;                                                                           /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);          /* read ctrl reg3 */
-    if (res)                                                                                /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);         /* read ctrl reg3 */
+    if (res != 0)                                                                           /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                             /* read failed */
        
@@ -576,7 +604,7 @@ uint8_t uvis25_set_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
     prev &= ~(1 << 6);                                                                      /* clear pin type bit */
     prev |= pin_type << 6;                                                                  /* set pin type */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -592,8 +620,8 @@ uint8_t uvis25_set_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
  */
 uint8_t uvis25_get_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_pin_type_t *pin_type)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -604,8 +632,8 @@ uint8_t uvis25_get_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);        /* read ctrl reg3 */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);       /* read ctrl reg3 */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read failed */
        
@@ -619,7 +647,7 @@ uint8_t uvis25_get_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
 /**
  * @brief     set the interrupt type
  * @param[in] *handle points to a uvis25 handle structure
- * @param[in] interrupt is the interrupt type
+ * @param[in] type is the interrupt type
  * @return    status code
  *            - 0 success
  *            - 1 set interrupt type failed
@@ -627,10 +655,10 @@ uint8_t uvis25_get_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
  *            - 3 handle is not initialized
  * @note      none
  */
-uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type_t interrupt)
+uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type_t type)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                     /* check handle */
     {
@@ -641,23 +669,23 @@ uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type
         return 3;                                                                           /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);          /* read ctrl reg3 */
-    if (res)                                                                                /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);         /* read ctrl reg3 */
+    if (res != 0)                                                                           /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                             /* read failed */
        
         return 1;                                                                           /* return error */
     }
     prev &= ~(0x03 << 0);                                                                   /* clear interrupt type bits */
-    prev |= interrupt << 0;                                                                 /* set interrupt type */
+    prev |= type << 0;                                                                      /* set interrupt type */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
  * @brief      get the interrupt type
  * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *interrupt points to a interrupt type buffer
+ * @param[out] *type points to a interrupt type buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt type failed
@@ -665,10 +693,10 @@ uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type
  *             - 3 handle is not initialized
  * @note       none
  */
-uint8_t uvis25_get_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type_t *interrupt)
+uint8_t uvis25_get_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type_t *type)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -679,14 +707,14 @@ uint8_t uvis25_get_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);        /* read ctrl reg3 */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG3, (uint8_t *)&prev, 1);       /* read ctrl reg3 */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read failed */
        
         return 1;                                                                         /* return error */
     }
-    *interrupt = (uvis25_interrupt_type_t)((prev >> 0) & 0x03);                           /* get interrupt type */
+    *type = (uvis25_interrupt_type_t)((prev >> 0) & 0x03);                                /* get interrupt type */
     
     return 0;                                                                             /* success return 0 */
 }
@@ -704,8 +732,8 @@ uint8_t uvis25_get_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type
  */
 uint8_t uvis25_set_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -716,8 +744,8 @@ uint8_t uvis25_set_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable)
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);          /* read int cfg */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);         /* read int cfg */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read failed */
        
@@ -726,7 +754,7 @@ uint8_t uvis25_set_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable)
     prev &= ~(0x01 << 3);                                                                 /* clear interrupt enable bit */
     prev |= enable << 3;                                                                  /* set interrupt enable */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -742,8 +770,8 @@ uint8_t uvis25_set_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable)
  */
 uint8_t uvis25_get_interrupt(uvis25_handle_t *handle, uvis25_bool_t *enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
 
     if (handle == NULL)                                                                 /* check handle */
     {
@@ -754,8 +782,8 @@ uint8_t uvis25_get_interrupt(uvis25_handle_t *handle, uvis25_bool_t *enable)
         return 3;                                                                       /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);        /* read int cfg */
-    if (res)                                                                            /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);       /* read int cfg */
+    if (res != 0)                                                                       /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                         /* read failed */
        
@@ -779,8 +807,8 @@ uint8_t uvis25_get_interrupt(uvis25_handle_t *handle, uvis25_bool_t *enable)
  */
 uint8_t uvis25_set_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -791,8 +819,8 @@ uint8_t uvis25_set_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);          /* read int cfg */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);         /* read int cfg */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read failed */
        
@@ -801,7 +829,7 @@ uint8_t uvis25_set_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable
     prev &= ~(0x01 << 2);                                                                 /* clear latch interrupt enable bit */
     prev |= enable << 2;                                                                  /* set latch interrupt enable */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -817,8 +845,8 @@ uint8_t uvis25_set_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable
  */
 uint8_t uvis25_get_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t *enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                 /* check handle */
     {
@@ -829,8 +857,8 @@ uint8_t uvis25_get_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t *enabl
         return 3;                                                                       /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);        /* read int cfg */
-    if (res)                                                                            /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);       /* read int cfg */
+    if (res != 0)                                                                       /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                         /* read failed */
        
@@ -854,8 +882,8 @@ uint8_t uvis25_get_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t *enabl
  */
 uint8_t uvis25_set_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_t enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -866,8 +894,8 @@ uint8_t uvis25_set_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);          /* read int cfg */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);         /* read int cfg */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read failed */
        
@@ -876,7 +904,7 @@ uint8_t uvis25_set_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_
     prev &= ~(0x01 << 1);                                                                 /* clear interrupt low threshold bit */
     prev |= enable << 1;                                                                  /* set interrupt low threshold */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -892,8 +920,8 @@ uint8_t uvis25_set_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_
  */
 uint8_t uvis25_get_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_t *enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                 /* check handle */
     {
@@ -904,8 +932,8 @@ uint8_t uvis25_get_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_
         return 3;                                                                       /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);        /* read int cfg */
-    if (res)                                                                            /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);       /* read int cfg */
+    if (res != 0)                                                                       /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                         /* read failed */
        
@@ -929,8 +957,8 @@ uint8_t uvis25_get_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_
  */
 uint8_t uvis25_set_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool_t enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                   /* check handle */
     {
@@ -941,8 +969,8 @@ uint8_t uvis25_set_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool
         return 3;                                                                         /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);          /* read int cfg */
-    if (res)                                                                              /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);         /* read int cfg */
+    if (res != 0)                                                                         /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                           /* read failed */
        
@@ -951,7 +979,7 @@ uint8_t uvis25_set_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool
     prev &= ~(0x01 << 0);                                                                 /* clear interrupt high threshold enable bit */
     prev |= enable << 0;                                                                  /* set interrupt high threshold enable */
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);        /* write config */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);       /* write config */
 }
 
 /**
@@ -967,8 +995,8 @@ uint8_t uvis25_set_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool
  */
 uint8_t uvis25_get_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool_t *enable)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                 /* check handle */
     {
@@ -979,8 +1007,8 @@ uint8_t uvis25_get_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool
         return 3;                                                                       /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);        /* read int cfg */
-    if (res)                                                                            /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_CFG, (uint8_t *)&prev, 1);       /* read int cfg */
+    if (res != 0)                                                                       /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                         /* read failed */
        
@@ -1004,8 +1032,6 @@ uint8_t uvis25_get_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool
  */
 uint8_t uvis25_set_threshold(uvis25_handle_t *handle, uint8_t threshold)
 {
-    volatile uint8_t res;
-    
     if (handle == NULL)                                                                       /* check handle */
     {
         return 2;                                                                             /* return error */
@@ -1015,7 +1041,7 @@ uint8_t uvis25_set_threshold(uvis25_handle_t *handle, uint8_t threshold)
         return 3;                                                                             /* return error */
     }  
     
-    return _uvis25_iic_spi_write(handle, UVIS25_REG_THS_UV, (uint8_t *)&threshold, 1);        /* write threshold */
+    return a_uvis25_iic_spi_write(handle, UVIS25_REG_THS_UV, (uint8_t *)&threshold, 1);       /* write threshold */
 }
 
 /**
@@ -1031,8 +1057,6 @@ uint8_t uvis25_set_threshold(uvis25_handle_t *handle, uint8_t threshold)
  */
 uint8_t uvis25_get_threshold(uvis25_handle_t *handle, uint8_t *threshold)
 {
-    volatile uint8_t res;
-    
     if (handle == NULL)                                                                     /* check handle */
     {
         return 2;                                                                           /* return error */
@@ -1042,7 +1066,7 @@ uint8_t uvis25_get_threshold(uvis25_handle_t *handle, uint8_t *threshold)
         return 3;                                                                           /* return error */
     }  
     
-    return _uvis25_iic_spi_read(handle, UVIS25_REG_THS_UV, (uint8_t *)threshold, 1);        /* read threshold */
+    return a_uvis25_iic_spi_read(handle, UVIS25_REG_THS_UV, (uint8_t *)threshold, 1);       /* read threshold */
 }
 
 /**
@@ -1057,7 +1081,7 @@ uint8_t uvis25_get_threshold(uvis25_handle_t *handle, uint8_t *threshold)
  */
 uint8_t uvis25_irq_handler(uvis25_handle_t *handle)
 {
-    volatile uint8_t res, prev;
+    uint8_t res, prev;
     
     if (handle == NULL)                                                                    /* check handle */
     {
@@ -1068,24 +1092,33 @@ uint8_t uvis25_irq_handler(uvis25_handle_t *handle)
         return 3;                                                                          /* return error */
     }
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_INT_SOURCE, (uint8_t *)&prev, 1);        /* read int source */
-    if (res)                                                                               /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_INT_SOURCE, (uint8_t *)&prev, 1);       /* read int source */
+    if (res != 0)                                                                          /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                            /* read failed */
        
         return 1;                                                                          /* return error */
     }
-    if (prev & (1 < 2))                                                                    /* active */
+    if ((prev & (1 < 2)) != 0)                                                             /* active */
     {
-        handle->receive_callback(UVIS25_INTERRUPT_ACTIVE);                                 /* run callback */
+        if (handle->receive_callback != NULL)                                              /* check the callback */
+        {
+            handle->receive_callback(UVIS25_INTERRUPT_ACTIVE);                             /* run callback */
+        }
     }
-    if (prev & (1 << 1))                                                                   /* interrupt lower */
+    if ((prev & (1 << 1)) != 0)                                                            /* interrupt lower */
     {
-        handle->receive_callback(UVIS25_INTERRUPT_LOWER);                                  /* run callback */
+        if (handle->receive_callback != NULL)                                              /* check the callback */
+        {
+            handle->receive_callback(UVIS25_INTERRUPT_LOWER);                              /* run callback */
+        }
     }
-    if (prev & (1 << 0))                                                                   /* interrupt higher */
+    if ((prev & (1 << 0)) != 0)                                                            /* interrupt higher */
     {
-        handle->receive_callback(UVIS25_INTERRUPT_HIGHER);                                 /* run callback */
+        if (handle->receive_callback != NULL)                                              /* check the callback */
+        {
+            handle->receive_callback(UVIS25_INTERRUPT_HIGHER);                             /* run callback */
+        }
     }    
     
     return 0;                                                                              /* success return 0 */
@@ -1159,7 +1192,7 @@ uint8_t uvis25_threshold_convert_to_data(uvis25_handle_t *handle, uint8_t reg, f
  */
 uint8_t uvis25_init(uvis25_handle_t *handle)
 {
-    volatile uint8_t id;
+    uint8_t id;
   
     if (handle == NULL)                                                              /* check handle */
     {
@@ -1226,7 +1259,7 @@ uint8_t uvis25_init(uvis25_handle_t *handle)
     
     if (handle->iic_spi == UVIS25_INTERFACE_IIC)                                     /* iic interface */
     {
-        if (handle->iic_init())                                                      /* iic init */
+        if (handle->iic_init() != 0)                                                 /* iic init */
         {
             handle->debug_print("uvis25: iic init failed.\n");                       /* iic init failed */
             
@@ -1235,23 +1268,23 @@ uint8_t uvis25_init(uvis25_handle_t *handle)
     }
     else                                                                             /* spi interface */
     {
-        if (handle->spi_init())                                                      /* spi init */
+        if (handle->spi_init() != 0)                                                 /* spi init */
         {
             handle->debug_print("uvis25: spi init failed.\n");                       /* spi init failed */
            
             return 1;                                                                /* return error */
         }
     }
-    if (_uvis25_iic_spi_read(handle, UVIS25_REG_WHO_AM_I, (uint8_t *)&id, 1))        /* read id */
+    if (a_uvis25_iic_spi_read(handle, UVIS25_REG_WHO_AM_I, (uint8_t *)&id, 1) != 0)  /* read id */
     {
         handle->debug_print("uvis25: read id failed.\n");                            /* read id failed */
         if (handle->iic_spi == UVIS25_INTERFACE_IIC)                                 /* id iic interface */
         {
-            handle->iic_deinit();                                                    /* iic deinit */
+            (void)handle->iic_deinit();                                              /* iic deinit */
         }
         else
         {
-            handle->spi_deinit();                                                    /* spi deinit */
+            (void)handle->spi_deinit();                                              /* spi deinit */
         }
         
         return 1;                                                                    /* return error */
@@ -1261,11 +1294,11 @@ uint8_t uvis25_init(uvis25_handle_t *handle)
         handle->debug_print("uvis25: id is invalid.\n");                             /* id is invalid */
         if (handle->iic_spi == UVIS25_INTERFACE_IIC)                                 /* if iic interface */
         {
-            handle->iic_deinit();                                                    /* iic deinit */
+            (void)handle->iic_deinit();                                              /* iic deinit */
         }
         else
         {
-            handle->spi_deinit();                                                    /* spi deinit */
+            (void)handle->spi_deinit();                                              /* spi deinit */
         }
         
         return 1;                                                                    /* return error */
@@ -1287,8 +1320,8 @@ uint8_t uvis25_init(uvis25_handle_t *handle)
  */
 uint8_t uvis25_deinit(uvis25_handle_t *handle)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                    /* check handle */
     {
@@ -1299,8 +1332,8 @@ uint8_t uvis25_deinit(uvis25_handle_t *handle)
         return 3;                                                                          /* return error */
     }  
     
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);         /* read ctrl reg2 */
-    if (res)                                                                               /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);        /* read ctrl reg2 */
+    if (res != 0)                                                                          /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                            /* read failed */
        
@@ -1308,8 +1341,8 @@ uint8_t uvis25_deinit(uvis25_handle_t *handle)
     }
     prev &= ~(0x01 << 7);                                                                  /* clear reboot bit */
     prev |= 1 << 7;                                                                        /* set reboot */
-    res = _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);        /* write config */
-    if (res)                                                                               /* check result */
+    res = a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);       /* write config */
+    if (res != 0)                                                                          /* check result */
     {
         handle->debug_print("uvis25: write register failed.\n");                           /* write ctrl reg2 failed */
        
@@ -1318,7 +1351,7 @@ uint8_t uvis25_deinit(uvis25_handle_t *handle)
     if (handle->iic_spi == UVIS25_INTERFACE_IIC)                                           /* iic interface */
     {
         res = handle->iic_deinit();                                                        /* iic deinit */
-        if (res)                                                                           /* check result */
+        if (res != 0)                                                                      /* check result */
         {
             handle->debug_print("uvis25: iic deinit failed.\n");                           /* iic deinit failed */
            
@@ -1328,7 +1361,7 @@ uint8_t uvis25_deinit(uvis25_handle_t *handle)
     else                                                                                   /* spi interface */
     {
         res = handle->spi_deinit();                                                        /* spi deinit */
-        if (res)                                                                           /* check result */
+        if (res != 0)                                                                      /* check result */
         {
             handle->debug_print("uvis25: spi deinit failed.\n");                           /* spi deinit */
            
@@ -1354,9 +1387,9 @@ uint8_t uvis25_deinit(uvis25_handle_t *handle)
  */
 uint8_t uvis25_single_read(uvis25_handle_t *handle, uint8_t *raw, float *uv)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
-    volatile uint8_t timeout;
+    uint8_t res;
+    uint8_t prev;
+    uint8_t timeout;
     
     if (handle == NULL)                                                                          /* check handle */
     {
@@ -1367,23 +1400,23 @@ uint8_t uvis25_single_read(uvis25_handle_t *handle, uint8_t *raw, float *uv)
         return 3;                                                                                /* return error */
     }  
 
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);               /* read ctrl reg1 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);              /* read ctrl reg1 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                                  /* read failed */
        
         return 1;                                                                                /* return error */
     }
     prev &= ~(1 << 0);                                                                           /* disable continuous reading */
-    res = _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);              /* write ctrl reg1 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);             /* write ctrl reg1 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: write register failed.\n");                                 /* write failed */
        
         return 1;                                                                                /* return error */
     }
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);               /* read ctrl reg2 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);              /* read ctrl reg2 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                                  /* read ctrl reg2 failed */
        
@@ -1391,8 +1424,8 @@ uint8_t uvis25_single_read(uvis25_handle_t *handle, uint8_t *raw, float *uv)
     }
     prev &= ~(1 << 0);                                                                           /* clear one shot bit */
     prev |= 1 << 0;                                                                              /* set one shot */
-    res = _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);              /* write reg2 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);             /* write reg2 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: write register failed.\n");                                 /* write ctrl reg2 failed */
        
@@ -1400,40 +1433,41 @@ uint8_t uvis25_single_read(uvis25_handle_t *handle, uint8_t *raw, float *uv)
     }
     timeout = 0;                                                                                 /* reset timeout times */
     
-    start:
-    
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_STATUS_REG, (uint8_t *)&prev, 1);              /* read status */
-    if (res)                                                                                     /* check result */
+    while (1)                                                                                    /* loop */
     {
-        handle->debug_print("uvis25: read register failed.\n");                                  /* read failed */
-       
-        return 1;                                                                                /* return error */
-    }
-    if (prev & 0x01)                                                                             /* if data ready */
-    {
-        res = _uvis25_iic_spi_read(handle, UVIS25_REG_UV_OUT_REG, (uint8_t *)raw, 1);            /* read uv out */
-        if (res)                                                                                 /* check result */
+        res = a_uvis25_iic_spi_read(handle, UVIS25_REG_STATUS_REG, (uint8_t *)&prev, 1);         /* read status */
+        if (res != 0)                                                                            /* check result */
         {
-            handle->debug_print("uvis25: read failed.\n");                                       /* read failed */
+            handle->debug_print("uvis25: read register failed.\n");                              /* read failed */
            
             return 1;                                                                            /* return error */
-        }  
-        *uv = (float)(*raw) / 16.0f;                                                             /* convert raw */
-    
-        return 0;                                                                                /* success return 0 */
-    }
-    else if (timeout < 100)                                                                      /* if not timeout */
-    {
-        handle->delay_ms(100);                                                                   /* delay 100 ms */
-        timeout++;                                                                               /* retry times++ */
+        }
+        if ((prev & 0x01) != 0)                                                                  /* if data ready */
+        {
+            res = a_uvis25_iic_spi_read(handle, UVIS25_REG_UV_OUT_REG, (uint8_t *)raw, 1);       /* read uv out */
+            if (res != 0)                                                                        /* check result */
+            {
+                handle->debug_print("uvis25: read failed.\n");                                   /* read failed */
+               
+                return 1;                                                                        /* return error */
+            }  
+            *uv = (float)(*raw) / 16.0f;                                                         /* convert raw */
         
-        goto start;                                                                              /* goto start */
-    }
-    else
-    {
-        handle->debug_print("uvis25: data is not available.\n");                                 /* data is not available */
-           
-        return 1;                                                                                /* return error */
+            return 0;                                                                            /* success return 0 */
+        }
+        else if (timeout < 100)                                                                  /* if not timeout */
+        {
+            handle->delay_ms(100);                                                               /* delay 100 ms */
+            timeout++;                                                                           /* retry times++ */
+            
+            continue;                                                                            /* continue */
+        }
+        else
+        {
+            handle->debug_print("uvis25: data is not available.\n");                             /* data is not available */
+               
+            return 1;                                                                            /* return error */
+        }
     }
 }
 
@@ -1449,8 +1483,8 @@ uint8_t uvis25_single_read(uvis25_handle_t *handle, uint8_t *raw, float *uv)
  */
 uint8_t uvis25_start_continuous_read(uvis25_handle_t *handle)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                          /* check handle */
     {
@@ -1461,8 +1495,8 @@ uint8_t uvis25_start_continuous_read(uvis25_handle_t *handle)
         return 3;                                                                                /* return error */
     }  
 
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);               /* read ctrl reg1 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);              /* read ctrl reg1 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                                  /* read failed */
        
@@ -1470,23 +1504,23 @@ uint8_t uvis25_start_continuous_read(uvis25_handle_t *handle)
     }
     prev &= ~(1 << 0);                                                                           /* clear continuous reading */
     prev |= 1 << 0;                                                                              /* enable continuous reading */
-    res = _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);              /* write ctrl reg1 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);             /* write ctrl reg1 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: write register failed.\n");                                 /* write failed */
        
         return 1;                                                                                /* return error */
     }
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);               /* read ctrl reg2 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);              /* read ctrl reg2 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                                  /* read ctrl reg2 failed */
        
         return 1;                                                                                /* return error */
     }
     prev &= ~(1 << 0);                                                                           /* clear one shot bit */
-    res = _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);              /* write reg2 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);             /* write reg2 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: write register failed.\n");                                 /* write ctrl reg2 failed */
        
@@ -1508,8 +1542,8 @@ uint8_t uvis25_start_continuous_read(uvis25_handle_t *handle)
  */
 uint8_t uvis25_stop_continuous_read(uvis25_handle_t *handle)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                          /* check handle */
     {
@@ -1520,31 +1554,31 @@ uint8_t uvis25_stop_continuous_read(uvis25_handle_t *handle)
         return 3;                                                                                /* return error */
     }  
 
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);               /* read ctrl reg1 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);              /* read ctrl reg1 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                                  /* read failed */
        
         return 1;                                                                                /* return error */
     }
     prev &= ~(1 << 0);                                                                           /* clear continuous reading */
-    res = _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);              /* write ctrl reg1 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG1, (uint8_t *)&prev, 1);             /* write ctrl reg1 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: write register failed.\n");                                 /* write failed */
        
         return 1;                                                                                /* return error */
     }
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);               /* read ctrl reg2 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);              /* read ctrl reg2 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                                  /* read ctrl reg2 failed */
        
         return 1;                                                                                /* return error */
     }
     prev &= ~(1 << 0);                                                                           /* clear one shot bit */
-    res = _uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);              /* write reg2 */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_write(handle, UVIS25_REG_CTRL_REG2, (uint8_t *)&prev, 1);             /* write reg2 */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: write register failed.\n");                                 /* write ctrl reg2 failed */
        
@@ -1568,8 +1602,8 @@ uint8_t uvis25_stop_continuous_read(uvis25_handle_t *handle)
  */
 uint8_t uvis25_continuous_read(uvis25_handle_t *handle, uint8_t *raw, float *uv)
 {
-    volatile uint8_t res;
-    volatile uint8_t prev;
+    uint8_t res;
+    uint8_t prev;
     
     if (handle == NULL)                                                                          /* check handle */
     {
@@ -1580,17 +1614,17 @@ uint8_t uvis25_continuous_read(uvis25_handle_t *handle, uint8_t *raw, float *uv)
         return 3;                                                                                /* return error */
     }  
 
-    res = _uvis25_iic_spi_read(handle, UVIS25_REG_STATUS_REG, (uint8_t *)&prev, 1);              /* read status failed */
-    if (res)                                                                                     /* check result */
+    res = a_uvis25_iic_spi_read(handle, UVIS25_REG_STATUS_REG, (uint8_t *)&prev, 1);             /* read status failed */
+    if (res != 0)                                                                                /* check result */
     {
         handle->debug_print("uvis25: read register failed.\n");                                  /* read failed */
        
         return 1;                                                                                /* return error */
     }
-    if (prev & 0x01)                                                                             /* check status */
+    if ((prev & 0x01) != 0)                                                                      /* check status */
     {
-        res = _uvis25_iic_spi_read(handle, UVIS25_REG_UV_OUT_REG, (uint8_t *)raw, 1);            /* read uv out reg */
-        if (res)                                                                                 /* check result */
+        res = a_uvis25_iic_spi_read(handle, UVIS25_REG_UV_OUT_REG, (uint8_t *)raw, 1);           /* read uv out reg */
+        if (res != 0)                                                                            /* check result */
         {
             handle->debug_print("uvis25: read failed.\n");                                       /* read uv out failed */
            
@@ -1632,7 +1666,7 @@ uint8_t uvis25_set_reg(uvis25_handle_t *handle, uint8_t reg, uint8_t *buf, uint1
         return 3;                                               /* return error */
     }
     
-    return _uvis25_iic_spi_write(handle, reg, buf, len);        /* write data */
+    return a_uvis25_iic_spi_write(handle, reg, buf, len);       /* write data */
 }
 
 /**
@@ -1659,7 +1693,7 @@ uint8_t uvis25_get_reg(uvis25_handle_t *handle, uint8_t reg, uint8_t *buf, uint1
         return 3;                                              /* return error */
     }
     
-    return _uvis25_iic_spi_read(handle, reg, buf, len);        /* read data */
+    return a_uvis25_iic_spi_read(handle, reg, buf, len);       /* read data */
 }
 
 /**

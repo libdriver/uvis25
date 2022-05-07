@@ -35,8 +35,8 @@
  * </table>
  */
 
-#ifndef _DRIVER_UVIS25_INTERRUPT_H_
-#define _DRIVER_UVIS25_INTERRUPT_H_
+#ifndef DRIVER_UVIS25_INTERRUPT_H
+#define DRIVER_UVIS25_INTERRUPT_H
 
 #include "driver_uvis25_interface.h"
 
@@ -77,12 +77,14 @@ uint8_t uvis25_interrupt_irq_handler(void);
  * @param[in] interface is the chip interface
  * @param[in] mode is the interrpt mode type
  * @param[in] uv_threshold is the uv threshold
+ * @param[in] *callback points to a callback function
  * @return    status code
  *            - 0 success
  *            - 1 init failed
  * @note      none
  */
-uint8_t uvis25_interrupt_init(uvis25_interface_t interface, uvis25_interrupt_type_t mode, float uv_threshold);
+uint8_t uvis25_interrupt_init(uvis25_interface_t interface, uvis25_interrupt_type_t mode, float uv_threshold,
+                              void (*callback)(uint8_t type));
 
 /**
  * @brief  basic interrupt deinit

@@ -48,6 +48,42 @@ uint8_t g_flag;                            /**< interrupt flag */
 uint8_t (*g_gpio_irq)(void) = NULL;        /**< gpio irq function address */
 
 /**
+ * @brief     interface receive callback
+ * @param[in] type is the interrupt type
+ * @note      none
+ */
+static void a_callback(uint8_t type)
+{
+    switch (type)
+    {
+        case UVIS25_INTERRUPT_ACTIVE :
+        {
+            uvis25_interface_debug_print("uvis25: active interrupt.\n");
+            
+            break;
+        }
+        case UVIS25_INTERRUPT_HIGHER :
+        {
+            uvis25_interface_debug_print("uvis25: high threshold interrupt.\n");
+            
+            break;
+        }
+        case UVIS25_INTERRUPT_LOWER :
+        {
+            uvis25_interface_debug_print("uvis25: low threshold interrupt.\n");
+            
+            break;
+        }
+        default :
+        {
+            uvis25_interface_debug_print("uvis25: unknown code.\n");
+            
+            break;
+        }
+    }
+}
+
+/**
  * @brief     uvis25 full function
  * @param[in] argc is arg numbers
  * @param[in] **argv is the arg address
@@ -131,7 +167,7 @@ uint8_t uvis25(uint8_t argc, char **argv)
             /* reg test */
             if (strcmp("reg", argv[2]) == 0)
             {
-                volatile uint8_t res;
+                uint8_t res;
                 uvis25_interface_t interface;
                 
                 if (strcmp("-iic", argv[3]) == 0)
@@ -149,7 +185,7 @@ uint8_t uvis25(uint8_t argc, char **argv)
                     return 5;
                 }
                 res = uvis25_register_test(interface);
-                if (res)
+                if (res != 0)
                 {
                     return 1;
                 }
@@ -176,8 +212,8 @@ uint8_t uvis25(uint8_t argc, char **argv)
             /* read test */
             if (strcmp("read", argv[2]) == 0)
             {
-                volatile uint8_t res;
-                volatile uint32_t times;
+                uint8_t res;
+                uint32_t times;
                 uvis25_interface_t interface;
                 
                 if (strcmp("-iic", argv[4]) == 0)
@@ -196,7 +232,7 @@ uint8_t uvis25(uint8_t argc, char **argv)
                 }
                 times = atoi(argv[3]);
                 res = uvis25_read_test(interface, times);
-                if (res)
+                if (res != 0)
                 {
                     return 1;
                 }
@@ -215,9 +251,9 @@ uint8_t uvis25(uint8_t argc, char **argv)
             /* read function */
             if (strcmp("read", argv[2]) == 0)
             {
-                volatile uint8_t res;
-                volatile uint32_t i, times;
-                volatile float uv;
+                uint8_t res;
+                uint32_t i, times;
+                float uv;
                 uvis25_interface_t interface;
                 
                 if (strcmp("-iic", argv[4]) == 0)
@@ -236,33 +272,33 @@ uint8_t uvis25(uint8_t argc, char **argv)
                 }
                 times = atoi(argv[3]);
                 res = uvis25_basic_init(interface);
-                if (res)
+                if (res != 0)
                 {
                     return 1;
                 }
-                for (i=0; i<times; i++)
+                for (i = 0; i < times; i++)
                 {
                     uvis25_interface_delay_ms(2000);
                     res = uvis25_basic_read((float *)&uv);
-                    if (res)
+                    if (res != 0)
                     {
-                        uvis25_basic_deinit();
+                        (void)uvis25_basic_deinit();
                         
                         return 1;
                     }
                     uvis25_interface_debug_print("uvis25: %d/%d.\n", i+1, times);
                     uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
                 }
-                uvis25_basic_deinit();
+                (void)uvis25_basic_deinit();
                 
                 return 0;
             }
             /* shot function */
             else if (strcmp("shot", argv[2]) == 0)
             {
-                volatile uint8_t res;
-                volatile uint32_t i, times;
-                volatile float uv;
+                uint8_t res;
+                uint32_t i, times;
+                float uv;
                 uvis25_interface_t interface;
                 
                 if (strcmp("-iic", argv[4]) == 0)
@@ -281,24 +317,24 @@ uint8_t uvis25(uint8_t argc, char **argv)
                 }
                 times = atoi(argv[3]);
                 res = uvis25_shot_init(interface);
-                if (res)
+                if (res != 0)
                 {
                     return 1;
                 }
-                for (i=0; i<times; i++)
+                for (i = 0; i < times; i++)
                 {
                     uvis25_interface_delay_ms(2000);
                     res = uvis25_shot_read((float *)&uv);
-                    if (res)
+                    if (res != 0)
                     {
-                        uvis25_shot_deinit();
+                        (void)uvis25_shot_deinit();
                         
                         return 1;
                     }
                     uvis25_interface_debug_print("uvis25: %d/%d.\n", i+1, times);
                     uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
                 }
-                uvis25_shot_deinit();
+                (void)uvis25_shot_deinit();
                 
                 return 0;
             }
@@ -322,8 +358,8 @@ uint8_t uvis25(uint8_t argc, char **argv)
             /* int test */
             if (strcmp("int", argv[2]) == 0)
             {
-                volatile uint8_t res;
-                volatile uint32_t times;
+                uint8_t res;
+                uint32_t times;
                 uvis25_interface_t interface;
                 
                 if (strcmp("-iic", argv[4]) == 0)
@@ -347,19 +383,19 @@ uint8_t uvis25(uint8_t argc, char **argv)
                 times = atoi(argv[3]);
                 g_gpio_irq = uvis25_interrupt_test_irq_handler;
                 res = gpio_interrupt_init();
-                if (res)
+                if (res != 0)
                 {
                     return 1;
                 }
-                res = uvis25_interrupt_test(interface, atof(argv[6]), times);
-                if (res)
+                res = uvis25_interrupt_test(interface, (float)atof(argv[6]), times);
+                if (res != 0)
                 {
-                    gpio_interrupt_deinit();
+                    (void)gpio_interrupt_deinit();
                     g_gpio_irq = NULL;
                     
                     return 1;
                 }
-                gpio_interrupt_deinit();
+                (void)gpio_interrupt_deinit();
                 g_gpio_irq = NULL;
                 
                 return 0;
@@ -384,9 +420,9 @@ uint8_t uvis25(uint8_t argc, char **argv)
             /* int function */
             if (strcmp("int", argv[2]) == 0)
             {
-                volatile uint8_t res;
-                volatile uint32_t i, times;
-                volatile float uv;
+                uint8_t res;
+                uint32_t i, times;
+                float uv;
                 uvis25_interface_t interface;
                 uvis25_interrupt_type_t mode;
                 
@@ -437,42 +473,42 @@ uint8_t uvis25(uint8_t argc, char **argv)
                 times = atoi(argv[3]);
                 g_gpio_irq = uvis25_interrupt_irq_handler;
                 res = gpio_interrupt_init();
-                if (res)
+                if (res != 0)
                 {
                     return 1;
                 }
                 g_flag = 0;
-                res = uvis25_interrupt_init(interface, mode, atof(argv[8]));
-                if (res)
+                res = uvis25_interrupt_init(interface, mode, (float)atof(argv[8]), a_callback);
+                if (res != 0)
                 {
-                    gpio_interrupt_deinit();
+                    (void)gpio_interrupt_deinit();
                     g_gpio_irq = NULL;
                     
                     return 1;
                 }
-                for (i=0; i<times; i++)
+                for (i = 0; i < times; i++)
                 {
                     uvis25_interface_delay_ms(2000);
                     res = uvis25_interrupt_read((float *)&uv);
-                    if (res)
+                    if (res != 0)
                     {
-                        uvis25_interrupt_deinit();
-                        gpio_interrupt_deinit();
+                        (void)uvis25_interrupt_deinit();
+                        (void)gpio_interrupt_deinit();
                         g_gpio_irq = NULL;
                         
                         return 1;
                     }
                     uvis25_interface_debug_print("uvis25: %d/%d.\n", i+1, times);
                     uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
-                    if (g_flag)
+                    if (g_flag != 0)
                     {
                         uvis25_interface_debug_print("uvis25: find interrupt.\n");
                         
                         break;
                     }
                 }
-                uvis25_interrupt_deinit();
-                gpio_interrupt_deinit();
+                (void)uvis25_interrupt_deinit();
+                (void)gpio_interrupt_deinit();
                 g_gpio_irq = NULL;
                 
                 return 0;
