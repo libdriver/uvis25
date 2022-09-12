@@ -52,6 +52,8 @@ LibDriver UVIS25は、LibDriverによって起動されたUVIS25の全機能ド�
 #### example basic
 
 ```C
+#include "driver_uvis25_basic.h"
+
 uint8_t res;
 uint32_t i;
 float uv;
@@ -90,6 +92,8 @@ return 0;
 #### example shot
 
 ```c
+#include "driver_uvis25_shot.h"
+
 uint8_t res;
 uint8_t i;
 float uv;
@@ -128,6 +132,8 @@ return 0;
 #### example interrupt
 
 ```C
+#include "driver_uvis25_interrupt.h"
+
 uint8_t res;
 uint8_t i;
 float uv;

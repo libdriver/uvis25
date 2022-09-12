@@ -29,15 +29,15 @@ LibDriver UVIS25 is the full function driver of UVIS25 launched by LibDriver.It 
 
 /src includes LibDriver UVIS25 source files.
 
-/interface includes LibDriver UVIS25 IIC and SPI platform independent template。
+/interface includes LibDriver UVIS25 IIC and SPI platform independent template.
 
-/test includes LibDriver UVIS25 driver test code and this code can test the chip necessary function simply。
+/test includes LibDriver UVIS25 driver test code and this code can test the chip necessary function simply.
 
 /example includes LibDriver UVIS25 sample code.
 
 /doc includes LibDriver UVIS25 offline document.
 
-/datasheet includes UVIS25 datasheet。
+/datasheet includes UVIS25 datasheet.
 
 /project includes the common Linux and MCU development board sample code. All projects use the shell script to debug the driver and the detail instruction can be found in each project's README.md.
 
@@ -52,6 +52,8 @@ Add /src, /interface and /example to your project.
 #### example basic
 
 ```C
+#include "driver_uvis25_basic.h"
+
 uint8_t res;
 uint32_t i;
 float uv;
@@ -90,6 +92,8 @@ return 0;
 #### example shot
 
 ```C
+#include "driver_uvis25_shot.h"
+
 uint8_t res;
 uint8_t i;
 float uv;
@@ -128,6 +132,8 @@ return 0;
 #### example interrupt
 
 ```C
+#include "driver_uvis25_interrupt.h"
+
 uint8_t res;
 uint8_t i;
 float uv;
