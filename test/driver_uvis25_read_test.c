@@ -82,7 +82,7 @@ uint8_t uvis25_read_test(uvis25_interface_t interface, uint32_t times)
         uvis25_interface_debug_print("uvis25: chip is %s.\n", info.chip_name);
         uvis25_interface_debug_print("uvis25: manufacturer is %s.\n", info.manufacturer_name);
         uvis25_interface_debug_print("uvis25: interface is %s.\n", info.interface);
-        uvis25_interface_debug_print("uvis25: driver version is %d.%d.\n", info.driver_version/1000, (info.driver_version%1000)/100);
+        uvis25_interface_debug_print("uvis25: driver version is %d.%d.\n", info.driver_version / 1000, (info.driver_version % 1000) / 100);
         uvis25_interface_debug_print("uvis25: min supply voltage is %0.1fV.\n", info.supply_voltage_min_v);
         uvis25_interface_debug_print("uvis25: max supply voltage is %0.1fV.\n", info.supply_voltage_max_v);
         uvis25_interface_debug_print("uvis25: max current is %0.2fmA.\n", info.max_current_ma);

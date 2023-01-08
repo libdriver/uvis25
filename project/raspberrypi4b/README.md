@@ -1,14 +1,14 @@
-### 1. Chip
+### 1. Board
 
-#### 1.1 Chip Info
+#### 1.1 Board Info
 
-chip name : Raspberry Pi 4B.
+Board Name: Raspberry Pi 4B.
 
-iic pin: SCL/SDA GPIO3/GPIO2.
+IIC Pin: SCL/SDA GPIO3/GPIO2.
 
-spi pin: SCLK/MOSI/MISO/CS GPIO11/GPIO10/GPIO9/GPIO8.
+SPI Pin: SCLK/MOSI/MISO/CS GPIO11/GPIO10/GPIO9/GPIO8.
 
-gpio pin: INT GPIO17.
+GPIO Pin: INT GPIO17.
 
 ### 2. Install
 
@@ -79,29 +79,59 @@ find_package(uvis25 REQUIRED)
 
 #### 3.1 Command Instruction
 
-​          uvis25 is a basic command which can test all uvis25 driver function:
+1. Show uvis25 chip and driver information.
 
-​           -i        show uvis25 chip and driver information.
+   ```shell
+   uvis25 (-i | --information)
+   ```
 
-​           -h       show uvis25 help.
+2. Show uvis25 help.
 
-​           -p       show uvis25 pin connections of the current board.
+   ```shell
+   uvis25 (-h | --help)
+   ```
 
-​           -t (reg (-iic | -spi) | read <times> (-iic | -spi) | int <times> (-iic | -spi)  -th <threshold>) 
+3. Show uvis25 pin connections of the current board.
 
-​           -t reg (-iic | -spi)        run uvis25 register test.
+   ```shell
+   uvis25 (-p | --port)
+   ```
 
-​           -t read <times> (-iic | -spi)        run uvis25 read test. times means test times.
+4. Run uvis25 register test.
 
-​           -t int <times> (-iic | -spi)  -th <threshold>        run uvis25 interrupt test. times means test times. threshold means the interrupt threshold.
+   ```shell
+   uvis25 (-t reg | --test=reg) [--interface=<iic | spi>]
+   ```
 
-​           -c (read <times> (-iic | -spi) | shot <times> (-iic | -spi) | int <times>  (-iic | -spi) -m <mode> -th <threshold>)
+5. Run uvis25 read test, num means test times.
 
-​           -c read <times> (-iic | -spi)         run uvis25 read function. times means test times.
+   ```shell
+   uvis25 (-t read | --test=read) [--interface=<iic | spi>] [--times=<num>]
+   ```
 
-​           -c shot <times> (-iic | -spi)        run uvis25 shot function. times means test times.
+6. Run uvis25 interrupt test, num means test times, th means the interrupt threshold.
 
-​           -c int <times>  (-iic | -spi) -m <mode> -th <threshold>       run uvis25 interrupt function. times means test times. mode means interrupt mode and it can be "READY","HIGH","LOW" or "HIGH|LOW". threshold means the interrupt threshold.
+   ```shell
+   uvis25 (-t int | --test=int) [--interface=<iic | spi>] [--times=<num>] [--threshold=<th>]
+   ```
+
+7. Run uvis25 read function, num means test times.
+
+   ```shell
+   uvis25 (-e read | --example=read) [--interface=<iic | spi>] [--times=<num>]
+   ```
+
+8. Run uvis25 shot function, num means test times.
+
+   ```shell
+   uvis25 (-e shot | --example=shot) [--interface=<iic | spi>] [--times=<num>]
+   ```
+
+9. Run uvis25 interrupt function, num means test times, th means the interrupt threshold.
+
+   ```shell
+   uvis25 (-e int | --example=int) [--interface=<iic | spi>] [--times=<num>] [--threshold=<th>] [--mode=<READY | HIGH | LOW | HIGH-OR-LOW>]
+   ```
 
 #### 3.2 Command Example
 
@@ -132,7 +162,7 @@ uvis25: INT connected to GPIO17(BCM).
 ```
 
 ```shell
-./uvis25 -t reg -spi
+./uvis25 -t reg --interface=spi
 
 uvis25: chip is STMicroelectronics UVIS25.
 uvis25: manufacturer is STMicroelectronics.
@@ -199,23 +229,23 @@ uvis25: check linterrupt high threshold ok.
 uvis25: set interrupt high threshold false.
 uvis25: check interrupt high threshold ok.
 uvis25: uvis25_set_threshold/uvis25_get_threshold test.
-uvis25: set threshold 176.
+uvis25: set threshold 103.
 uvis25: check threshold ok.
 uvis25: uvis25_set_boot/uvis25_get_boot test.
 uvis25: set boot mode normal.
 uvis25: check boot mode ok.
 uvis25: uvis25_threshold_convert_to_register/uvis25_threshold_convert_to_data test.
 uvis25: threshold convert to register.
-uvis25: uv is 12.6700.
-uvis25: register is 0xCA.
+uvis25: uv is 14.8600.
+uvis25: register is 0xED.
 uvis25: threshold convert to data.
-uvis25: register is 0xCA.
-uvis25: uv is 12.6250.
+uvis25: register is 0xED.
+uvis25: uv is 14.8125.
 uvis25: finish register test.
 ```
 
 ```shell
-./uvis25 -t read 3 -spi
+./uvis25 -t read --interface=spi --times=3
 
 uvis25: chip is STMicroelectronics UVIS25.
 uvis25: manufacturer is STMicroelectronics.
@@ -239,7 +269,7 @@ uvis25: finish read test.
 ```
 
 ```shell
-./uvis25 -t int 3 -spi -th 0.5
+./uvis25 -t int --interface=spi --times=3 --threshold=0.5
 
 uvis25: chip is STMicroelectronics UVIS25.
 uvis25: manufacturer is STMicroelectronics.
@@ -253,8 +283,8 @@ uvis25: min temperature is -20.0C.
 uvis25: start interrupt test.
 uvis25: low threshold interrupt.
 uvis25: low threshold interrupt.
-uvis25: low threshold interrupt.
 uvis25: uv 0.0000 is lower than threshold.
+uvis25: low threshold interrupt.
 uvis25: low threshold interrupt.
 uvis25: low threshold interrupt.
 uvis25: uv 0.0000 is lower than threshold.
@@ -265,7 +295,7 @@ uvis25: finish interrupt test.
 ```
 
 ```shell
-./uvis25 -c read 3 -spi
+./uvis25 -e read --interface=spi --times=3
 
 uvis25: 1/3.
 uvis25: uv is 0.0000.
@@ -276,7 +306,7 @@ uvis25: uv is 0.0000.
 ```
 
 ```shell
-./uvis25 -c shot 3 -spi
+./uvis25 -e shot --interface=spi --times=3
 
 uvis25: 1/3.
 uvis25: uv is 0.0000.
@@ -287,33 +317,44 @@ uvis25: uv is 0.0000.
 ```
 
 ```shell
-./uvis25 -c int 3 -spi -m HIGH -th 0.5
+./uvis25 -e int --interface=spi --times=3 --threshold=0.1 --mode=HIGH
 
 uvis25: 1/3.
-uvis25: uv is 0.8750.
+uvis25: uv is 0.0000.
+uvis25: active interrupt.
+uvis25: high threshold interrupt.
+uvis25: 2/3.
+uvis25: uv is 0.5625.
 uvis25: find interrupt.
 ```
 
 ```shell
 ./uvis25 -h
 
-uvis25 -i
-	show uvis25 chip and driver information.
-uvis25 -h
-	show uvis25 help.
-uvis25 -p
-	show uvis25 pin connections of the current board.
-uvis25 -t reg (-iic | -spi)
-	run uvis25 register test.
-uvis25 -t read <times> (-iic | -spi)
-	run uvis25 read test.times means test times.
-uvis25 -t int <times> (-iic | -spi) -th <threshold>
-	run uvis25 interrupt test.times means test times.threshold means the interrupt threshold.
-uvis25 -c read <times> (-iic | -spi)
-	run uvis25 read function.times means test times.
-uvis25 -c shot <times> (-iic | -spi)
-	run uvis25 shot function.times means test times.
-uvis25 -c int <times> (-iic | -spi) -m <mode> -th <threshold>
-	run uvis25 interrupt function.times means test times.mode means interrupt mode and it can be "READY","HIGH","LOW" or "HIGH|LOW".threshold means the interrupt threshold.
-```
+Usage:
+  uvis25 (-i | --information)
+  uvis25 (-h | --help)
+  uvis25 (-p | --port)
+  uvis25 (-t reg | --test=reg) [--interface=<iic | spi>]
+  uvis25 (-t read | --test=read) [--interface=<iic | spi>] [--times=<num>]
+  uvis25 (-t int | --test=int) [--interface=<iic | spi>] [--times=<num>] [--threshold=<th>]
+  uvis25 (-e read | --example=read) [--interface=<iic | spi>] [--times=<num>]
+  uvis25 (-e shot | --example=shot) [--interface=<iic | spi>] [--times=<num>]
+  uvis25 (-e int | --example=int) [--interface=<iic | spi>] [--times=<num>] [--threshold=<th>]
+         [--mode=<READY | HIGH | LOW | HIGH-OR-LOW>]
 
+Options:
+  -e <read | shot | int>, --example=<read | shot | int>
+                          Run the driver example.
+  -h, --help              Show the help.
+  -i, --information       Show the chip information.
+      --interface=<iic | spi>
+                          Set the chip interface.([default: iic])
+      --mode=<READY | HIGH | LOW | HIGH-OR-LOW>
+                          Set the interrupt mode.([default: HIGH])
+  -p, --port              Display the pin connections of the current board.
+  -t <reg | read | int>, --test=<reg | read | int>
+                          Run the driver test.
+      --threshold=<th>    Set the interrupt threshold.([default: 0.5])
+      --times=<num>       Set the running times.([default: 3])
+```
