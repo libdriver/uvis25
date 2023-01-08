@@ -46,14 +46,15 @@
 #include "gpio.h"
 #include "uart.h"
 #include "shell.h"
+#include "getopt.h"
 #include <stdlib.h>
 
 /**
  * @brief global var definition
  */
 uint8_t g_buf[256];                        /**< uart buffer */
-uint16_t g_len;                            /**< uart buffer length */
-uint8_t g_flag;                            /**< interrupt flag */
+volatile uint16_t g_len;                   /**< uart buffer length */
+volatile uint8_t g_flag;                   /**< interrupt flag */
 uint8_t (*g_gpio_irq)(void) = NULL;        /**< gpio irq function address */
 
 /**
@@ -74,10 +75,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == GPIO_PIN_0)
     {
-        if (g_gpio_irq)
+        if (g_gpio_irq != NULL)
         {
             g_gpio_irq();
-            g_flag = 1;
         }
     }
 }
@@ -94,18 +94,21 @@ static void a_callback(uint8_t type)
         case UVIS25_INTERRUPT_ACTIVE :
         {
             uvis25_interface_debug_print("uvis25: active interrupt.\n");
-            
+            g_flag = 1;
+
             break;
         }
         case UVIS25_INTERRUPT_HIGHER :
         {
             uvis25_interface_debug_print("uvis25: high threshold interrupt.\n");
-            
+            g_flag = 1;
+
             break;
         }
         case UVIS25_INTERRUPT_LOWER :
         {
             uvis25_interface_debug_print("uvis25: low threshold interrupt.\n");
+            g_flag = 1;
             
             break;
         }
@@ -130,437 +133,434 @@ static void a_callback(uint8_t type)
  */
 uint8_t uvis25(uint8_t argc, char **argv)
 {
+    int c;
+    int longindex = 0;
+    const char short_options[] = "hipe:t:";
+    const struct option long_options[] =
+    {
+        {"help", no_argument, NULL, 'h'},
+        {"information", no_argument, NULL, 'i'},
+        {"port", no_argument, NULL, 'p'},
+        {"example", required_argument, NULL, 'e'},
+        {"test", required_argument, NULL, 't'},
+        {"interface", required_argument, NULL, 1},
+        {"mode", required_argument, NULL, 2},
+        {"threshold", required_argument, NULL, 3},
+        {"times", required_argument, NULL, 4},
+        {NULL, 0, NULL, 0},
+    };
+    char type[32] = "unknow";
+    uint32_t times = 3;
+    uvis25_interrupt_type_t mode = UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH;
+    uvis25_interface_t interface = UVIS25_INTERFACE_IIC;
+    float threshold = 0.5f;
+    
+    /* if no params */
     if (argc == 1)
     {
+        /* goto the help */
         goto help;
     }
-    else if (argc == 2)
+    
+    /* init 0 */
+    optind = 0;
+    
+    /* parse */
+    do
     {
-        if (strcmp("-i", argv[1]) == 0)
+        /* parse the args */
+        c = getopt_long(argc, argv, short_options, long_options, &longindex);
+        
+        /* judge the result */
+        switch (c)
         {
-            uvis25_info_t info;
-            
-            /* print uvis25 info */
-            uvis25_info(&info);
-            uvis25_interface_debug_print("uvis25: chip is %s.\n", info.chip_name);
-            uvis25_interface_debug_print("uvis25: manufacturer is %s.\n", info.manufacturer_name);
-            uvis25_interface_debug_print("uvis25: interface is %s.\n", info.interface);
-            uvis25_interface_debug_print("uvis25: driver version is %d.%d.\n", info.driver_version/1000, (info.driver_version%1000)/100);
-            uvis25_interface_debug_print("uvis25: min supply voltage is %0.1fV.\n", info.supply_voltage_min_v);
-            uvis25_interface_debug_print("uvis25: max supply voltage is %0.1fV.\n", info.supply_voltage_max_v);
-            uvis25_interface_debug_print("uvis25: max current is %0.2fmA.\n", info.max_current_ma);
-            uvis25_interface_debug_print("uvis25: max temperature is %0.1fC.\n", info.temperature_max);
-            uvis25_interface_debug_print("uvis25: min temperature is %0.1fC.\n", info.temperature_min);
-            
-            return 0;
-        }
-        else if (strcmp("-p", argv[1]) == 0)
-        {
-            /* print pin connection */
-            uvis25_interface_debug_print("uvis25: SPI interface SCK connected to GPIOA PIN5.\n");
-            uvis25_interface_debug_print("uvis25: SPI interface MISO connected to GPIOA PIN6.\n");
-            uvis25_interface_debug_print("uvis25: SPI interface MOSI connected to GPIOA PIN7.\n");
-            uvis25_interface_debug_print("uvis25: SPI interface CS connected to GPIOA PIN4.\n");
-            uvis25_interface_debug_print("uvis25: IIC interface SCL connected to GPIOB PIN8.\n");
-            uvis25_interface_debug_print("uvis25: IIC interface SDA connected to GPIOB PIN9.\n");
-            uvis25_interface_debug_print("uvis25: INT connected to GPIOB PIN0.\n");
-            
-            return 0;
-        }
-        else if (strcmp("-h", argv[1]) == 0)
-        {
-            /* show uvis25 help */
-            
-            help:
-            
-            uvis25_interface_debug_print("uvis25 -i\n\tshow uvis25 chip and driver information.\n");
-            uvis25_interface_debug_print("uvis25 -h\n\tshow uvis25 help.\n");
-            uvis25_interface_debug_print("uvis25 -p\n\tshow uvis25 pin connections of the current board.\n");
-            uvis25_interface_debug_print("uvis25 -t reg (-iic | -spi)\n\trun uvis25 register test.\n");
-            uvis25_interface_debug_print("uvis25 -t read <times> (-iic | -spi)\n\trun uvis25 read test.times means test times.\n");
-            uvis25_interface_debug_print("uvis25 -t int <times> (-iic | -spi) -th <threshold>\n\trun uvis25 interrupt test."
-                                         "times means test times.threshold means the interrupt threshold.\n");
-            uvis25_interface_debug_print("uvis25 -c read <times> (-iic | -spi)\n\trun uvis25 read function.times means test times.\n");
-            uvis25_interface_debug_print("uvis25 -c shot <times> (-iic | -spi)\n\trun uvis25 shot function.times means test times.\n");
-            uvis25_interface_debug_print("uvis25 -c int <times> (-iic | -spi) -m <mode> -th <threshold>\n\trun uvis25 interrupt function."
-                                         "times means test times.");
-            uvis25_interface_debug_print("mode means interrupt mode and it can be \"READY\",\"HIGH\",\"LOW\" or \"HIGH|LOW\"."
-                                         "threshold means the interrupt threshold.\n");
-            
-            return 0;
-        }
-        else
-        {
-            return 5;
-        }
-    }
-    else if (argc == 4)
-    {
-        /* run test */
-        if (strcmp("-t", argv[1]) == 0)
-        {
-            /* reg test */
-            if (strcmp("reg", argv[2]) == 0)
+            /* help */
+            case 'h' :
             {
-                uint8_t res;
-                uvis25_interface_t interface;
+                /* set the type */
+                memset(type, 0, sizeof(char) * 32);
+                snprintf(type, 32, "h");
                 
-                if (strcmp("-iic", argv[3]) == 0)
+                break;
+            }
+            
+            /* information */
+            case 'i' :
+            {
+                /* set the type */
+                memset(type, 0, sizeof(char) * 32);
+                snprintf(type, 32, "i");
+                
+                break;
+            }
+            
+            /* port */
+            case 'p' :
+            {
+                /* set the type */
+                memset(type, 0, sizeof(char) * 32);
+                snprintf(type, 32, "p");
+                
+                break;
+            }
+            
+            /* example */
+            case 'e' :
+            {
+                /* set the type */
+                memset(type, 0, sizeof(char) * 32);
+                snprintf(type, 32, "e_%s", optarg);
+                
+                break;
+            }
+            
+            /* test */
+            case 't' :
+            {
+                /* set the type */
+                memset(type, 0, sizeof(char) * 32);
+                snprintf(type, 32, "t_%s", optarg);
+                
+                break;
+            }
+            
+            /* interface */
+            case 1 :
+            {
+                /* set the interface */
+                if (strcmp("iic", optarg) == 0)
                 {
                     interface = UVIS25_INTERFACE_IIC;
                 }
-                else if (strcmp("-spi", argv[3]) == 0)
+                else if (strcmp("spi", optarg) == 0)
                 {
                     interface = UVIS25_INTERFACE_SPI;
                 }
                 else
                 {
-                    uvis25_interface_debug_print("uvis25: interface is invalid.\n");
-                    
                     return 5;
                 }
-                res = uvis25_register_test(interface);
-                if (res != 0)
-                {
-                    return 1;
-                }
                 
-                return 0;
+                break;
             }
-            /* param is invalid */
-            else
+            
+            /* mode */
+            case 2 :
             {
-                return 5;
-            }
-        }
-        /* param is invalid */
-        else
-        {
-            return 5;
-        }
-    }
-    else if (argc == 5)
-    {
-        /* run test */
-        if (strcmp("-t", argv[1]) == 0)
-        {
-            /* read test */
-            if (strcmp("read", argv[2]) == 0)
-            {
-                uint8_t res;
-                uint32_t times;
-                uvis25_interface_t interface;
-                
-                if (strcmp("-iic", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_IIC;
-                }
-                else if (strcmp("-spi", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_SPI;
-                }
-                else
-                {
-                    uvis25_interface_debug_print("uvis25: interface is invalid.\n");
-                    
-                    return 5;
-                }
-                times = atoi(argv[3]);
-                res = uvis25_read_test(interface, times);
-                if (res != 0)
-                {
-                    return 1;
-                }
-                
-                return 0;
-            }
-            /* param is invalid */
-            else
-            {
-                return 5;
-            }
-        }
-        /* run function */
-        if (strcmp("-c", argv[1]) == 0)
-        {
-            /* read function */
-            if (strcmp("read", argv[2]) == 0)
-            {
-                uint8_t res;
-                uint32_t i, times;
-                float uv;
-                uvis25_interface_t interface;
-                
-                if (strcmp("-iic", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_IIC;
-                }
-                else if (strcmp("-spi", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_SPI;
-                }
-                else
-                {
-                    uvis25_interface_debug_print("uvis25: interface is invalid.\n");
-                    
-                    return 5;
-                }
-                times = atoi(argv[3]);
-                res = uvis25_basic_init(interface);
-                if (res != 0)
-                {
-                    return 1;
-                }
-                for (i = 0; i < times; i++)
-                {
-                    uvis25_interface_delay_ms(2000);
-                    res = uvis25_basic_read((float *)&uv);
-                    if (res != 0)
-                    {
-                        (void)uvis25_basic_deinit();
-                        
-                        return 1;
-                    }
-                    uvis25_interface_debug_print("uvis25: %d/%d.\n", i+1, times);
-                    uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
-                }
-                (void)uvis25_basic_deinit();
-                
-                return 0;
-            }
-            /* shot function */
-            else if (strcmp("shot", argv[2]) == 0)
-            {
-                uint8_t res;
-                uint32_t i, times;
-                float uv;
-                uvis25_interface_t interface;
-                
-                if (strcmp("-iic", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_IIC;
-                }
-                else if (strcmp("-spi", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_SPI;
-                }
-                else
-                {
-                    uvis25_interface_debug_print("uvis25: interface is invalid.\n");
-                    
-                    return 5;
-                }
-                times = atoi(argv[3]);
-                res = uvis25_shot_init(interface);
-                if (res != 0)
-                {
-                    return 1;
-                }
-                for (i = 0; i < times; i++)
-                {
-                    uvis25_interface_delay_ms(2000);
-                    res = uvis25_shot_read((float *)&uv);
-                    if (res != 0)
-                    {
-                        (void)uvis25_shot_deinit();
-                        
-                        return 1;
-                    }
-                    uvis25_interface_debug_print("uvis25: %d/%d.\n", i+1, times);
-                    uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
-                }
-                (void)uvis25_shot_deinit();
-                
-                return 0;
-            }
-            /* param is invalid */
-            else
-            {
-                return 5;
-            }
-        }
-        /* param is invalid */
-        else
-        {
-            return 5;
-        }
-    }
-    else if (argc == 7)
-    {
-        /* run test */
-        if (strcmp("-t", argv[1]) == 0)
-        {
-            /* int test */
-            if (strcmp("int", argv[2]) == 0)
-            {
-                uint8_t res;
-                uint32_t times;
-                uvis25_interface_t interface;
-                
-                if (strcmp("-iic", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_IIC;
-                }
-                else if (strcmp("-spi", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_SPI;
-                }
-                else
-                {
-                    uvis25_interface_debug_print("uvis25: interface is invalid.\n");
-                    
-                    return 5;
-                }
-                if (strcmp("-th", argv[5]) != 0)
-                {
-                    return 5;
-                }
-                times = atoi(argv[3]);
-                g_gpio_irq = uvis25_interrupt_test_irq_handler;
-                res = gpio_interrupt_init();
-                if (res != 0)
-                {
-                    return 1;
-                }
-                res = uvis25_interrupt_test(interface, (float)atof(argv[6]), times);
-                if (res != 0)
-                {
-                    (void)gpio_interrupt_deinit();
-                    g_gpio_irq = NULL;
-                    
-                    return 1;
-                }
-                (void)gpio_interrupt_deinit();
-                g_gpio_irq = NULL;
-                
-                return 0;
-            }
-            /* param is invalid */
-            else
-            {
-                return 5;
-            }
-        }
-        /* param is invalid */
-        else
-        {
-            return 5;
-        }
-    }
-    else if (argc == 9)
-    {
-        /* run function */
-        if (strcmp("-c", argv[1]) == 0)
-        {
-            /* int function */
-            if (strcmp("int", argv[2]) == 0)
-            {
-                uint8_t res;
-                uint32_t i, times;
-                float uv;
-                uvis25_interface_t interface;
-                uvis25_interrupt_type_t mode;
-                
-                if (strcmp("-iic", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_IIC;
-                }
-                else if (strcmp("-spi", argv[4]) == 0)
-                {
-                    interface = UVIS25_INTERFACE_SPI;
-                }
-                else
-                {
-                    uvis25_interface_debug_print("uvis25: interface is invalid.\n");
-                    
-                    return 5;
-                }
-                if (strcmp("-m", argv[5]) != 0)
-                {
-                    return 5;
-                }
-                if (strcmp("READY", argv[6]) == 0)
+                /* set the mode */
+                if (strcmp("READY", optarg) == 0)
                 {
                     mode = UVIS25_INTERRUPT_TYPE_DATA_READY;
                 }
-                else if (strcmp("LOW", argv[6]) == 0)
-                {
-                    mode = UVIS25_INTERRUPT_TYPE_UV_INDEX_LOW;
-                }
-                else if (strcmp("HIGH", argv[6]) == 0)
+                else if (strcmp("HIGH", optarg) == 0)
                 {
                     mode = UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH;
                 }
-                else if (strcmp("HIGH|LOW", argv[6]) == 0)
+                else if (strcmp("LOW", optarg) == 0)
+                {
+                    mode = UVIS25_INTERRUPT_TYPE_UV_INDEX_LOW;
+                }
+                else if (strcmp("HIGH-OR-LOW", optarg) == 0)
                 {
                     mode = UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH_LOW;
                 }
                 else
                 {
-                    uvis25_interface_debug_print("uvis25: mode is invalid.\n");
-                    
                     return 5;
                 }
-                if (strcmp("-th", argv[7]) != 0)
-                {
-                    return 5;
-                }
-                times = atoi(argv[3]);
-                g_gpio_irq = uvis25_interrupt_irq_handler;
-                res = gpio_interrupt_init();
-                if (res != 0)
-                {
-                    return 1;
-                }
-                g_flag = 0;
-                res = uvis25_interrupt_init(interface, mode, (float)atof(argv[8]), a_callback);
-                if (res != 0)
-                {
-                    (void)gpio_interrupt_deinit();
-                    g_gpio_irq = NULL;
-                    
-                    return 1;
-                }
-                for (i = 0; i < times; i++)
-                {
-                    uvis25_interface_delay_ms(2000);
-                    res = uvis25_interrupt_read((float *)&uv);
-                    if (res != 0)
-                    {
-                        (void)uvis25_interrupt_deinit();
-                        (void)gpio_interrupt_deinit();
-                        g_gpio_irq = NULL;
-                        
-                        return 1;
-                    }
-                    uvis25_interface_debug_print("uvis25: %d/%d.\n", i+1, times);
-                    uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
-                    if (g_flag != 0)
-                    {
-                        uvis25_interface_debug_print("uvis25: find interrupt.\n");
-                        
-                        break;
-                    }
-                }
-                (void)uvis25_interrupt_deinit();
-                (void)gpio_interrupt_deinit();
-                g_gpio_irq = NULL;
                 
-                return 0;
+                break;
             }
-            /* param is invalid */
-            else
+            
+            /* threshold */
+            case 3 :
+            {
+                threshold = atof(optarg);
+                
+                break;
+            }
+            
+            /* running times */
+            case 4 :
+            {
+                /* set the times */
+                times = atol(optarg);
+                
+                break;
+            } 
+            
+            /* the end */
+            case -1 :
+            {
+                break;
+            }
+            
+            /* others */
+            default :
             {
                 return 5;
             }
         }
-        /* param is invalid */
-        else
+    } while (c != -1);
+
+    /* run the function */
+    if (strcmp("t_reg", type) == 0)
+    {
+        uint8_t res;
+        
+        /* run reg test */
+        res = uvis25_register_test(interface);
+        if (res != 0)
         {
-            return 5;
+            return 1;
         }
+        
+        return 0;
     }
-    /* param is invalid */
+    else if (strcmp("t_read", type) == 0)
+    {
+        uint8_t res;
+        
+        /* run read test */
+        res = uvis25_read_test(interface, times);
+        if (res != 0)
+        {
+            return 1;
+        }
+        
+        return 0;
+    }
+    else if (strcmp("t_int", type) == 0)
+    {
+        uint8_t res;
+        
+        /* set gpio irq */
+        g_gpio_irq = uvis25_interrupt_test_irq_handler;
+        
+        /* gpio init */
+        res = gpio_interrupt_init();
+        if (res != 0)
+        {
+            return 1;
+        }
+        
+        /* run interrupt */
+        res = uvis25_interrupt_test(interface, threshold, times);
+        if (res != 0)
+        {
+            (void)gpio_interrupt_deinit();
+            g_gpio_irq = NULL;
+            
+            return 1;
+        }
+        
+        /* gpio deinit */
+        (void)gpio_interrupt_deinit();
+        g_gpio_irq = NULL;
+        
+        return 0;
+    }
+    else if (strcmp("e_read", type) == 0)
+    {
+        uint8_t res;
+        uint32_t i;
+        float uv;
+        
+        /* basic init */
+        res = uvis25_basic_init(interface);
+        if (res != 0)
+        {
+            return 1;
+        }
+        
+        /* loop */
+        for (i = 0; i < times; i++)
+        {
+            /* delay 2000ms */
+            uvis25_interface_delay_ms(2000);
+            
+            /* read data */
+            res = uvis25_basic_read((float *)&uv);
+            if (res != 0)
+            {
+                (void)uvis25_basic_deinit();
+                
+                return 1;
+            }
+            
+            /* output */
+            uvis25_interface_debug_print("uvis25: %d/%d.\n", i + 1, times);
+            uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
+        }
+        
+        /* basic deinit */
+        (void)uvis25_basic_deinit();
+        
+        return 0;
+    }
+    else if (strcmp("e_shot", type) == 0)
+    {
+        uint8_t res;
+        uint32_t i;
+        float uv;
+        
+        /* shot init */
+        res = uvis25_shot_init(interface);
+        if (res != 0)
+        {
+            return 1;
+        }
+        
+        /* loop */
+        for (i = 0; i < times; i++)
+        {
+            /* delay 2000ms */
+            uvis25_interface_delay_ms(2000);
+            
+            /* read data */
+            res = uvis25_shot_read((float *)&uv);
+            if (res != 0)
+            {
+                (void)uvis25_shot_deinit();
+                
+                return 1;
+            }
+            
+            /* output */
+            uvis25_interface_debug_print("uvis25: %d/%d.\n", i + 1, times);
+            uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
+        }
+        
+        /* shot deinit */
+        (void)uvis25_shot_deinit();
+        
+        return 0;
+    }
+    else if (strcmp("e_int", type) == 0)
+    {
+        uint8_t res;
+        uint32_t i;
+        float uv;
+        
+        /* set gpio irq */
+        g_gpio_irq = uvis25_interrupt_irq_handler;
+        
+        /* gpio init */
+        res = gpio_interrupt_init();
+        if (res != 0)
+        {
+            return 1;
+        }
+        
+        /* interrupt init */
+        g_flag = 0;
+        res = uvis25_interrupt_init(interface, mode, threshold, a_callback);
+        if (res != 0)
+        {
+            (void)gpio_interrupt_deinit();
+            g_gpio_irq = NULL;
+            
+            return 1;
+        }
+        
+        /* loop */
+        for (i = 0; i < times; i++)
+        {
+            /* delay 2000ms */
+            uvis25_interface_delay_ms(2000);
+            
+            /* read data */
+            res = uvis25_interrupt_read((float *)&uv);
+            if (res != 0)
+            {
+                (void)uvis25_interrupt_deinit();
+                (void)gpio_interrupt_deinit();
+                g_gpio_irq = NULL;
+                
+                return 1;
+            }
+            
+            /* output */
+            uvis25_interface_debug_print("uvis25: %d/%d.\n", i + 1, times);
+            uvis25_interface_debug_print("uvis25: uv is %0.4f.\n", uv);
+            if (g_flag != 0)
+            {
+                uvis25_interface_debug_print("uvis25: find interrupt.\n");
+                
+                break;
+            }
+        }
+        
+        /* deinit */
+        (void)uvis25_interrupt_deinit();
+        (void)gpio_interrupt_deinit();
+        g_gpio_irq = NULL;
+        
+        return 0;
+    }
+    else if (strcmp("h", type) == 0)
+    {
+        help:
+        uvis25_interface_debug_print("Usage:\n");
+        uvis25_interface_debug_print("  uvis25 (-i | --information)\n");
+        uvis25_interface_debug_print("  uvis25 (-h | --help)\n");
+        uvis25_interface_debug_print("  uvis25 (-p | --port)\n");
+        uvis25_interface_debug_print("  uvis25 (-t reg | --test=reg) [--interface=<iic | spi>]\n");
+        uvis25_interface_debug_print("  uvis25 (-t read | --test=read) [--interface=<iic | spi>] [--times=<num>]\n");
+        uvis25_interface_debug_print("  uvis25 (-t int | --test=int) [--interface=<iic | spi>] [--times=<num>] [--threshold=<th>]\n");
+        uvis25_interface_debug_print("  uvis25 (-e read | --example=read) [--interface=<iic | spi>] [--times=<num>]\n");
+        uvis25_interface_debug_print("  uvis25 (-e shot | --example=shot) [--interface=<iic | spi>] [--times=<num>]\n");
+        uvis25_interface_debug_print("  uvis25 (-e int | --example=int) [--interface=<iic | spi>] [--times=<num>] [--threshold=<th>]\n");
+        uvis25_interface_debug_print("         [--mode=<READY | HIGH | LOW | HIGH-OR-LOW>]\n");
+        uvis25_interface_debug_print("\n");
+        uvis25_interface_debug_print("Options:\n");
+        uvis25_interface_debug_print("  -e <read | shot | int>, --example=<read | shot | int>\n");
+        uvis25_interface_debug_print("                          Run the driver example.\n");
+        uvis25_interface_debug_print("  -h, --help              Show the help.\n");
+        uvis25_interface_debug_print("  -i, --information       Show the chip information.\n");
+        uvis25_interface_debug_print("      --interface=<iic | spi>\n");
+        uvis25_interface_debug_print("                          Set the chip interface.([default: iic])\n");
+        uvis25_interface_debug_print("      --mode=<READY | HIGH | LOW | HIGH-OR-LOW>\n");
+        uvis25_interface_debug_print("                          Set the interrupt mode.([default: HIGH])\n");
+        uvis25_interface_debug_print("  -p, --port              Display the pin connections of the current board.\n");
+        uvis25_interface_debug_print("  -t <reg | read | int>, --test=<reg | read | int>\n");
+        uvis25_interface_debug_print("                          Run the driver test.\n");
+        uvis25_interface_debug_print("      --threshold=<th>    Set the interrupt threshold.([default: 0.5])\n");
+        uvis25_interface_debug_print("      --times=<num>       Set the running times.([default: 3])\n");
+        
+        return 0;
+    }
+    else if (strcmp("i", type) == 0)
+    {
+        uvis25_info_t info;
+        
+        /* print uvis25 info */
+        uvis25_info(&info);
+        uvis25_interface_debug_print("uvis25: chip is %s.\n", info.chip_name);
+        uvis25_interface_debug_print("uvis25: manufacturer is %s.\n", info.manufacturer_name);
+        uvis25_interface_debug_print("uvis25: interface is %s.\n", info.interface);
+        uvis25_interface_debug_print("uvis25: driver version is %d.%d.\n", info.driver_version / 1000, (info.driver_version % 1000) / 100);
+        uvis25_interface_debug_print("uvis25: min supply voltage is %0.1fV.\n", info.supply_voltage_min_v);
+        uvis25_interface_debug_print("uvis25: max supply voltage is %0.1fV.\n", info.supply_voltage_max_v);
+        uvis25_interface_debug_print("uvis25: max current is %0.2fmA.\n", info.max_current_ma);
+        uvis25_interface_debug_print("uvis25: max temperature is %0.1fC.\n", info.temperature_max);
+        uvis25_interface_debug_print("uvis25: min temperature is %0.1fC.\n", info.temperature_min);
+        
+        return 0;
+    }
+    else if (strcmp("p", type) == 0)
+    {
+        /* print pin connection */
+        uvis25_interface_debug_print("uvis25: SPI interface SCK connected to GPIOA PIN5.\n");
+        uvis25_interface_debug_print("uvis25: SPI interface MISO connected to GPIOA PIN6.\n");
+        uvis25_interface_debug_print("uvis25: SPI interface MOSI connected to GPIOA PIN7.\n");
+        uvis25_interface_debug_print("uvis25: SPI interface CS connected to GPIOA PIN4.\n");
+        uvis25_interface_debug_print("uvis25: IIC interface SCL connected to GPIOB PIN8.\n");
+        uvis25_interface_debug_print("uvis25: IIC interface SDA connected to GPIOB PIN9.\n");
+        uvis25_interface_debug_print("uvis25: INT connected to GPIOB PIN0.\n");
+        
+        return 0;
+    }
     else
     {
         return 5;
@@ -581,19 +581,19 @@ int main(void)
     /* delay init */
     delay_init();
     
-    /* uart1 init */
-    uart1_init(115200);
+    /* uart init */
+    uart_init(115200);
     
     /* shell init && register uvis25 fuction */
     shell_init();
     shell_register("uvis25", uvis25);
-    uart1_print("uvis25: welcome to libdriver uvis25.\n");
+    uart_print("uvis25: welcome to libdriver uvis25.\n");
     
     while (1)
     {
         /* read uart */
-        g_len = uart1_read(g_buf, 256);
-        if (g_len)
+        g_len = uart_read(g_buf, 256);
+        if (g_len != 0)
         {
             /* run shell */
             res = shell_parse((char *)g_buf, g_len);
@@ -603,29 +603,29 @@ int main(void)
             }
             else if (res == 1)
             {
-                uart1_print("uvis25: run failed.\n");
+                uart_print("uvis25: run failed.\n");
             }
             else if (res == 2)
             {
-                uart1_print("uvis25: unknow command.\n");
+                uart_print("uvis25: unknow command.\n");
             }
             else if (res == 3)
             {
-                uart1_print("uvis25: length is too long.\n");
+                uart_print("uvis25: length is too long.\n");
             }
             else if (res == 4)
             {
-                uart1_print("uvis25: pretreat failed.\n");
+                uart_print("uvis25: pretreat failed.\n");
             }
             else if (res == 5)
             {
-                uart1_print("uvis25: param is invalid.\n");
+                uart_print("uvis25: param is invalid.\n");
             }
             else
             {
-                uart1_print("uvis25: unknow status code.\n");
+                uart_print("uvis25: unknow status code.\n");
             }
-            uart1_flush();
+            uart_flush();
         }
         delay_ms(100);
     }

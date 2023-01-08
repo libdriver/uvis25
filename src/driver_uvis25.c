@@ -535,7 +535,7 @@ uint8_t uvis25_set_interrupt_active_level(uvis25_handle_t *handle, uvis25_interr
 /**
  * @brief      get the interrupt active level
  * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *level points to a interrupt active level buffer
+ * @param[out] *level points to an interrupt active level buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt active level failed
@@ -610,7 +610,7 @@ uint8_t uvis25_set_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
 /**
  * @brief      get the interrupt pin type
  * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *pin_type points to a interrupt pin type buffer
+ * @param[out] *pin_type points to an interrupt pin type buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt pin type failed
@@ -685,7 +685,7 @@ uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type
 /**
  * @brief      get the interrupt type
  * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *type points to a interrupt type buffer
+ * @param[out] *type points to an interrupt type buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt type failed
@@ -1047,7 +1047,7 @@ uint8_t uvis25_set_threshold(uvis25_handle_t *handle, uint8_t threshold)
 /**
  * @brief      get the interrupt threshold
  * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *threshold points to a interrupt threshold buffer
+ * @param[out] *threshold points to an interrupt threshold buffer
  * @return     status code
  *             - 0 success
  *             - 1 get threshold failed
