@@ -161,7 +161,7 @@ uint8_t uvis25_read_test(uvis25_interface_t interface, uint32_t times)
         return 1;
     }
     
-    /* set interrupt pin type push pull */
+    /* set interrupt pin type push-pull */
     res = uvis25_set_interrupt_pin_type(&gs_handle, UVIS25_INTERRUPT_PIN_TYPE_PUSH_PULL);
     if (res != 0)
     {

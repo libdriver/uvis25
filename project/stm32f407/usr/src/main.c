@@ -149,7 +149,7 @@ uint8_t uvis25(uint8_t argc, char **argv)
         {"times", required_argument, NULL, 4},
         {NULL, 0, NULL, 0},
     };
-    char type[33] = "unknow";
+    char type[33] = "unknown";
     uint32_t times = 3;
     uvis25_interrupt_type_t mode = UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH;
     uvis25_interface_t interface = UVIS25_INTERFACE_IIC;
@@ -584,7 +584,7 @@ int main(void)
     /* uart init */
     uart_init(115200);
     
-    /* shell init && register uvis25 fuction */
+    /* shell init && register uvis25 function */
     shell_init();
     shell_register("uvis25", uvis25);
     uart_print("uvis25: welcome to libdriver uvis25.\n");
@@ -607,7 +607,7 @@ int main(void)
             }
             else if (res == 2)
             {
-                uart_print("uvis25: unknow command.\n");
+                uart_print("uvis25: unknown command.\n");
             }
             else if (res == 3)
             {
@@ -623,7 +623,7 @@ int main(void)
             }
             else
             {
-                uart_print("uvis25: unknow status code.\n");
+                uart_print("uvis25: unknown status code.\n");
             }
             uart_flush();
         }
