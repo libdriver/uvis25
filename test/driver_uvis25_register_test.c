@@ -97,7 +97,7 @@ uint8_t uvis25_register_test(uvis25_interface_t interface)
         uvis25_interface_debug_print("uvis25: min temperature is %0.1fC.\n", info.temperature_min);
     }
     
-    /* start tegister test */
+    /* start register test */
     uvis25_interface_debug_print("uvis25: start register test.\n");
     
     /* uvis25_set_interface/uvis25_get_interface test */
@@ -338,7 +338,7 @@ uint8_t uvis25_register_test(uvis25_interface_t interface)
     /* uvis25_set_interrupt_pin_type/uvis25_get_interrupt_pin_type test */
     uvis25_interface_debug_print("uvis25: uvis25_set_interrupt_pin_type/uvis25_get_interrupt_pin_type test.\n");
 
-    /* set push pull */
+    /* set push-pull */
     res = uvis25_set_interrupt_pin_type(&gs_handle, UVIS25_INTERRUPT_PIN_TYPE_PUSH_PULL);
     if (res != 0)
     {
@@ -568,7 +568,7 @@ uint8_t uvis25_register_test(uvis25_interface_t interface)
         
         return 1;
     }
-    uvis25_interface_debug_print("uvis25: check linterrupt low threshold %s.\n", bool_check==UVIS25_BOOL_TRUE?"ok":"error");
+    uvis25_interface_debug_print("uvis25: check interrupt low threshold %s.\n", bool_check==UVIS25_BOOL_TRUE?"ok":"error");
     
     /* set false */
     res = uvis25_set_interrupt_low_threshold(&gs_handle, UVIS25_BOOL_FALSE);
@@ -588,7 +588,7 @@ uint8_t uvis25_register_test(uvis25_interface_t interface)
         
         return 1;
     }
-    uvis25_interface_debug_print("uvis25: check linterrupt low threshold %s.\n", bool_check==UVIS25_BOOL_FALSE?"ok":"error");
+    uvis25_interface_debug_print("uvis25: check interrupt low threshold %s.\n", bool_check==UVIS25_BOOL_FALSE?"ok":"error");
     
     /* uvis25_set_interrupt_high_threshold/uvis25_get_interrupt_high_threshold test */
     uvis25_interface_debug_print("uvis25: uvis25_set_interrupt_high_threshold/uvis25_get_interrupt_high_threshold test.\n");
@@ -611,7 +611,7 @@ uint8_t uvis25_register_test(uvis25_interface_t interface)
         
         return 1;
     }
-    uvis25_interface_debug_print("uvis25: check linterrupt high threshold %s.\n", bool_check==UVIS25_BOOL_TRUE?"ok":"error");
+    uvis25_interface_debug_print("uvis25: check interrupt high threshold %s.\n", bool_check==UVIS25_BOOL_TRUE?"ok":"error");
     
     /* set false */
     res = uvis25_set_interrupt_high_threshold(&gs_handle, UVIS25_BOOL_FALSE);

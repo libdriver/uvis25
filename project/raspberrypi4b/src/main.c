@@ -115,7 +115,7 @@ uint8_t uvis25(uint8_t argc, char **argv)
         {"times", required_argument, NULL, 4},
         {NULL, 0, NULL, 0},
     };
-    char type[33] = "unknow";
+    char type[33] = "unknown";
     uint32_t times = 3;
     uvis25_interrupt_type_t mode = UVIS25_INTERRUPT_TYPE_UV_INDEX_HIGH;
     uvis25_interface_t interface = UVIS25_INTERFACE_IIC;
@@ -560,7 +560,7 @@ int main(uint8_t argc, char **argv)
     }
     else
     {
-        uvis25_interface_debug_print("uvis25: unknow status code.\n");
+        uvis25_interface_debug_print("uvis25: unknown status code.\n");
     }
 
     return 0;

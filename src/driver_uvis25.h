@@ -788,7 +788,7 @@ uint8_t uvis25_get_threshold(uvis25_handle_t *handle, uint8_t *threshold);
 uint8_t uvis25_threshold_convert_to_register(uvis25_handle_t *handle, float uv, uint8_t *reg);
 
 /**
- * @brief      convert a raw reigster data to a converted uv index
+ * @brief      convert a raw register data to a converted uv index
  * @param[in]  *handle points to a uvis25 handle structure
  * @param[in]  reg is the raw register data
  * @param[out] *uv points to a uv index buffer

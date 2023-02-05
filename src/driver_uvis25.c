@@ -60,7 +60,7 @@
 #define UVIS25_REG_INT_SOURCE        0x24        /**< interrupt source register */
 #define UVIS25_REG_THS_UV            0x25        /**< threshold uv register */
 #define UVIS25_REG_STATUS_REG        0x27        /**< status register */
-#define UVIS25_REG_UV_OUT_REG        0x28        /**< uv outpout register */
+#define UVIS25_REG_UV_OUT_REG        0x28        /**< uv output register */
 
 /**
  * @brief iic address definition
@@ -97,7 +97,7 @@ static uint8_t a_uvis25_iic_spi_read(uvis25_handle_t *handle, uint8_t reg, uint8
         {
             reg |= 1 << 6;                                                 /* set read more than 1 byte */
         }
-        reg |= 1 << 7;                                                     /* set read mdoe */
+        reg |= 1 << 7;                                                     /* set read mode */
         
         if (handle->spi_read(reg, buf, len) != 0)                          /* read register */
         {
@@ -1153,7 +1153,7 @@ uint8_t uvis25_threshold_convert_to_register(uvis25_handle_t *handle, float uv, 
 }
 
 /**
- * @brief      convert a raw reigster data to a converted uv index
+ * @brief      convert a raw register data to a converted uv index
  * @param[in]  *handle points to a uvis25 handle structure
  * @param[in]  reg is the raw register data
  * @param[out] *uv points to a uv index buffer
@@ -1720,7 +1720,7 @@ uint8_t uvis25_info(uvis25_info_t *info)
     info->max_current_ma = MAX_CURRENT;                             /* set maximum current */
     info->temperature_max = TEMPERATURE_MAX;                        /* set minimal temperature */
     info->temperature_min = TEMPERATURE_MIN;                        /* set maximum temperature */
-    info->driver_version = DRIVER_VERSION;                          /* set driver verison */
+    info->driver_version = DRIVER_VERSION;                          /* set driver version */
     
     return 0;                                                       /* success return 0 */
 }

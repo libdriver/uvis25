@@ -179,7 +179,7 @@ uint8_t uvis25_interrupt_test(uvis25_interface_t interface, float threshold, uin
         return 1;
     }
     
-    /* set push pull type */
+    /* set push-pull type */
     res = uvis25_set_interrupt_pin_type(&gs_handle, UVIS25_INTERRUPT_PIN_TYPE_PUSH_PULL);
     if (res != 0)
     {

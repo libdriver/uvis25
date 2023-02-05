@@ -57,7 +57,7 @@ extern "C"{
 #define UVIS25_INTERRUPT_DEFAULT_BOOT_MODE                  UVIS25_BOOT_NORMAL_MODE                        /* normal boot mode */
 #define UVIS25_INTERRUPT_DEFAULT_BLOCK_DATA_UPDATE          UVIS25_BOOL_FALSE                              /* disable block data update */
 #define UVIS25_INTERRUPT_DEFAULT_INTERRUPT_ACTIVE_LEVEL     UVIS25_INTERRUPT_ACTIVE_LEVEL_LOWER            /* low level */
-#define UVIS25_INTERRUPT_DEFAULT_INTERRUPT_PIN_TYPE         UVIS25_INTERRUPT_PIN_TYPE_PUSH_PULL            /* set push pull */
+#define UVIS25_INTERRUPT_DEFAULT_INTERRUPT_PIN_TYPE         UVIS25_INTERRUPT_PIN_TYPE_PUSH_PULL            /* set push-pull */
 #define UVIS25_INTERRUPT_DEFAULT_INTERRUPT                  UVIS25_BOOL_TRUE                               /* enable interrupt */
 #define UVIS25_INTERRUPT_DEFAULT_LATCH_INTERRUPT            UVIS25_BOOL_FALSE                              /* disable latch interrupt */
 #define UVIS25_INTERRUPT_DEFAULT_HIGH_THRESHOLD_INTERRUPT   UVIS25_BOOL_TRUE                               /* enable high threshold interrupt */
@@ -75,7 +75,7 @@ uint8_t uvis25_interrupt_irq_handler(void);
 /**
  * @brief     interrupt example init
  * @param[in] interface is the chip interface
- * @param[in] mode is the interrpt mode type
+ * @param[in] mode is the interrupt mode type
  * @param[in] uv_threshold is the uv threshold
  * @param[in] *callback points to a callback function
  * @return    status code
