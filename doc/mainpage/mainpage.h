@@ -1,6 +1,6 @@
 /**
  * @mainpage  LibDriver UVIS25
- * @brief     libdriver uvis25 is a full function driver of uvis25 and it can run in both MCU and Linux platform.
+ * @brief     LibDriver UVIS25 is a full function driver of UVIS25 and it can run in both MCU and Linux platform.
  * @version   2.0.0
  * @author    Shifeng Li
  *
