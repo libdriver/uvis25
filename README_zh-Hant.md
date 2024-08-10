@@ -8,7 +8,7 @@
 
 [![MISRA](https://img.shields.io/badge/misra-compliant-brightgreen.svg)](/misra/README.md) [![API](https://img.shields.io/badge/api-reference-blue.svg)](https://www.libdriver.com/docs/uvis25/index.html) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](/LICENSE)
 
-UVIS25是一種數字紫外線指數傳感器，能夠準確測量太陽光紫外線輻射指數。它包括傳感元件和混合信號ASIC並通過IIC和SPI提供紫外指數數據。 UVIS25使用一種專門的技術來實現UV指數的最大精度測量，無需專用算法計算紫外指數，無需在客戶生產線上進行校準。設備可以配置為生成基於閾值交叉或當生成一組新數據時的事件。 UVIS25有一個完整的模具LGA包裝（LGA）。它保證在一個小時內運行溫度範圍從-20°C至+85 °C.包是透明的，允許外部太陽輻射到達傳感器內部。
+UVIS25是一種數字紫外線指數傳感器，能夠準確測量太陽光紫外線輻射指數。它包括傳感元件和混合信號ASIC並通過IIC和SPI提供紫外指數數據。 UVIS25使用一種專門的技術來實現UV指數的最大精度測量，無需專用算法計算紫外指數，無需在客戶生產線上進行校準。設備可以配置為生成基於閾值交叉或當生成一組新數據時的事件。 UVIS25有一個完整的模具LGA包裝（LGA）。
 
 LibDriver UVIS25是LibDriver推出的UVIS25的全功能驅動，該驅動提供紫外線指數連續讀取、紫外線指數單次讀取，紫外線指數閾值中斷等功能並且它符合MISRA標準。
 
