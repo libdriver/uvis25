@@ -42,7 +42,7 @@ static uvis25_handle_t gs_handle;        /**< uvis25 handle */
 
 /**
  * @brief     register test
- * @param[in] interface is the chip interface
+ * @param[in] interface chip interface
  * @return    status code
  *            - 0 success
  *            - 1 test failed
