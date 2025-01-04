@@ -60,10 +60,10 @@ uint8_t uvis25_interrupt_irq_handler(void)
 
 /**
  * @brief     interrupt example init
- * @param[in] interface is the chip interface
- * @param[in] mode is the interrupt mode type
- * @param[in] uv_threshold is the uv threshold
- * @param[in] *callback points to a callback function
+ * @param[in] interface chip interface
+ * @param[in] mode interrupt mode type
+ * @param[in] uv_threshold uv threshold
+ * @param[in] *callback pointer to a callback function
  * @return    status code
  *            - 0 success
  *            - 1 init failed
@@ -252,7 +252,7 @@ uint8_t uvis25_interrupt_init(uvis25_interface_t interface, uvis25_interrupt_typ
 
 /**
  * @brief      interrupt example read
- * @param[out] *uv points to a uv index buffer
+ * @param[out] *uv pointer to a uv index buffer
  * @return     status code
  *             - 0 success
  *             - 1 read failed

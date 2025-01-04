@@ -199,96 +199,96 @@ typedef struct uvis25_info_s
 
 /**
  * @brief     initialize uvis25_handle_t structure
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] STRUCTURE is uvis25_handle_t
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] STRUCTURE uvis25_handle_t
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_INIT(HANDLE, STRUCTURE)         memset(HANDLE, 0, sizeof(STRUCTURE))
 
 /**
  * @brief     link iic_init function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to an iic_init function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to an iic_init function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_IIC_INIT(HANDLE, FUC)          (HANDLE)->iic_init = FUC
 
 /**
  * @brief     link iic_deinit function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to an iic_deinit function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to an iic_deinit function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_IIC_DEINIT(HANDLE, FUC)        (HANDLE)->iic_deinit = FUC
 
 /**
  * @brief     link iic_deinit function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to an iic_read function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to an iic_read function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_IIC_READ(HANDLE, FUC)          (HANDLE)->iic_read = FUC
 
 /**
  * @brief     link iic_write function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to an iic_write function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to an iic_write function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_IIC_WRITE(HANDLE, FUC)         (HANDLE)->iic_write = FUC
 
 /**
  * @brief     link spi_init function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to a spi_init function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to a spi_init function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_SPI_INIT(HANDLE, FUC)          (HANDLE)->spi_init = FUC
 
 /**
  * @brief     link spi_deinit function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to a spi_deinit function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to a spi_deinit function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_SPI_DEINIT(HANDLE, FUC)        (HANDLE)->spi_deinit = FUC
 
 /**
  * @brief     link spi_read function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to a spi_read function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to a spi_read function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_SPI_READ(HANDLE, FUC)          (HANDLE)->spi_read = FUC
 
 /**
  * @brief     link spi_write function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to a spi_write function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to a spi_write function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_SPI_WRITE(HANDLE, FUC)         (HANDLE)->spi_write = FUC
 
 /**
  * @brief     link delay_ms function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to a delay_ms function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to a delay_ms function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_DELAY_MS(HANDLE, FUC)          (HANDLE)->delay_ms = FUC
 
 /**
  * @brief     link debug_print function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to a debug_print function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to a debug_print function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_DEBUG_PRINT(HANDLE, FUC)       (HANDLE)->debug_print = FUC
 
 /**
  * @brief     link receive_callback function
- * @param[in] HANDLE points to a uvis25 handle structure
- * @param[in] FUC points to a receive_callback function address
+ * @param[in] HANDLE pointer to a uvis25 handle structure
+ * @param[in] FUC pointer to a receive_callback function address
  * @note      none
  */
 #define DRIVER_UVIS25_LINK_RECEIVE_CALLBACK(HANDLE, FUC)  (HANDLE)->receive_callback = FUC
@@ -306,7 +306,7 @@ typedef struct uvis25_info_s
 
 /**
  * @brief      get chip's information
- * @param[out] *info points to a uvis25 info structure
+ * @param[out] *info pointer to a uvis25 info structure
  * @return     status code
  *             - 0 success
  *             - 2 handle is NULL
@@ -316,7 +316,7 @@ uint8_t uvis25_info(uvis25_info_t *info);
 
 /**
  * @brief     initialize the chip
- * @param[in] *handle points to a uvis25 handle structure
+ * @param[in] *handle pointer to a uvis25 handle structure
  * @return    status code
  *            - 0 success
  *            - 1 iic or spi initialization failed
@@ -328,7 +328,7 @@ uint8_t uvis25_init(uvis25_handle_t *handle);
 
 /**
  * @brief     close the chip
- * @param[in] *handle points to a uvis25 handle structure
+ * @param[in] *handle pointer to a uvis25 handle structure
  * @return    status code
  *            - 0 success
  *            - 1 iic or spi deinit failed
@@ -340,9 +340,9 @@ uint8_t uvis25_deinit(uvis25_handle_t *handle);
 
 /**
  * @brief      read data once
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *raw points to a raw data buffer
- * @param[out] *uv points to a uv index buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *raw pointer to a raw data buffer
+ * @param[out] *uv pointer to a uv index buffer
  * @return     status code
  *             - 0 success
  *             - 1 single read failed
@@ -354,7 +354,7 @@ uint8_t uvis25_single_read(uvis25_handle_t *handle, uint8_t *raw, float *uv);
 
 /**
  * @brief     start reading
- * @param[in] *handle points to a uvis25 handle structure
+ * @param[in] *handle pointer to a uvis25 handle structure
  * @return    status code
  *            - 0 success
  *            - 1 start continuous read failed
@@ -366,7 +366,7 @@ uint8_t uvis25_start_continuous_read(uvis25_handle_t *handle);
 
 /**
  * @brief     stop reading
- * @param[in] *handle points to a uvis25 handle structure
+ * @param[in] *handle pointer to a uvis25 handle structure
  * @return    status code
  *            - 0 success
  *            - 1 stop continuous read failed
@@ -378,9 +378,9 @@ uint8_t uvis25_stop_continuous_read(uvis25_handle_t *handle);
 
 /**
  * @brief      read data continuously
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *raw points to a raw data buffer
- * @param[out] *uv points to a uv index buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *raw pointer to a raw data buffer
+ * @param[out] *uv pointer to a uv index buffer
  * @return     status code
  *             - 0 success
  *             - 1 continuous read failed
@@ -392,8 +392,8 @@ uint8_t uvis25_continuous_read(uvis25_handle_t *handle, uint8_t *raw, float *uv)
 
 /**
  * @brief     set the chip interface
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] interface is the chip interface
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] interface chip interface
  * @return    status code
  *            - 0 success
  *            - 2 handle is NULL
@@ -403,8 +403,8 @@ uint8_t uvis25_set_interface(uvis25_handle_t *handle, uvis25_interface_t interfa
 
 /**
  * @brief      get the chip interface
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *interface points to a chip interface
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *interface pointer to a chip interface
  * @return     status code
  *             - 0 success
  *             - 2 handle is NULL
@@ -414,7 +414,7 @@ uint8_t uvis25_get_interface(uvis25_handle_t *handle, uvis25_interface_t *interf
 
 /**
  * @brief     irq handler
- * @param[in] *handle points to a uvis25 handle structure
+ * @param[in] *handle pointer to a uvis25 handle structure
  * @return    status code
  *            - 0 success
  *            - 1 run failed
@@ -426,8 +426,8 @@ uint8_t uvis25_irq_handler(uvis25_handle_t *handle);
 
 /**
  * @brief     enable or disable blocking data update 
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] enable is a bool value
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] enable bool value
  * @return    status code
  *            - 0 success
  *            - 1 set block data update failed
@@ -439,8 +439,8 @@ uint8_t uvis25_set_block_data_update(uvis25_handle_t *handle, uvis25_bool_t enab
 
 /**
  * @brief      get blocking data update status 
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *enable points to a bool value buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *enable pointer to a bool value buffer
  * @return     status code
  *             - 0 success
  *             - 1 get block data update failed
@@ -452,8 +452,8 @@ uint8_t uvis25_get_block_data_update(uvis25_handle_t *handle, uvis25_bool_t *ena
 
 /**
  * @brief     set the boot mode
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] mode is the boot mode
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] mode boot mode
  * @return    status code
  *            - 0 success
  *            - 1 set boot failed
@@ -465,8 +465,8 @@ uint8_t uvis25_set_boot(uvis25_handle_t *handle, uvis25_boot_mode_t mode);
 
 /**
  * @brief      get the boot mode
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *mode points to a boot mode buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *mode pointer to a boot mode buffer
  * @return     status code
  *             - 0 success
  *             - 1 get boot failed
@@ -478,8 +478,8 @@ uint8_t uvis25_get_boot(uvis25_handle_t *handle, uvis25_boot_mode_t *mode);
 
 /**
  * @brief     enable or disable the chip iic
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] enable is a bool value
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] enable bool value
  * @return    status code
  *            - 0 success
  *            - 1 set iic failed
@@ -491,8 +491,8 @@ uint8_t uvis25_set_iic(uvis25_handle_t *handle, uvis25_bool_t enable);
 
 /**
  * @brief     enable or disable the chip iic
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] enable is a bool value
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] enable bool value
  * @return    status code
  *            - 0 success
  *            - 1 set iic failed
@@ -504,8 +504,8 @@ uint8_t uvis25_set_iic(uvis25_handle_t *handle, uvis25_bool_t enable);
 
 /**
  * @brief      get the chip iic status
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *enable points to a bool value buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *enable pointer to a bool value buffer
  * @return     status code
  *             - 0 success
  *             - 1 get iic failed
@@ -517,8 +517,8 @@ uint8_t uvis25_get_iic(uvis25_handle_t *handle, uvis25_bool_t *enable);
 
 /**
  * @brief      get the chip iic status
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *enable points to a bool value buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *enable pointer to a bool value buffer
  * @return     status code
  *             - 0 success
  *             - 1 get iic failed
@@ -530,8 +530,8 @@ uint8_t uvis25_get_iic(uvis25_handle_t *handle, uvis25_bool_t *enable);
 
 /**
  * @brief     set the spi wire
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] wire is the spi wire
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] wire spi wire
  * @return    status code
  *            - 0 success
  *            - 1 set spi wire failed
@@ -543,8 +543,8 @@ uint8_t uvis25_set_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t wire);
 
 /**
  * @brief      get the spi wire
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *wire points to a spi wire buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *wire pointer to a spi wire buffer
  * @return     status code
  *             - 0 success
  *             - 1 get spi wire failed
@@ -567,8 +567,8 @@ uint8_t uvis25_get_spi_wire(uvis25_handle_t *handle, uvis25_spi_wire_t *wire);
 
 /**
  * @brief     set the interrupt active level
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] level is the interrupt active level
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] level interrupt active level
  * @return    status code
  *            - 0 success
  *            - 1 set interrupt active level failed
@@ -580,8 +580,8 @@ uint8_t uvis25_set_interrupt_active_level(uvis25_handle_t *handle, uvis25_interr
 
 /**
  * @brief      get the interrupt active level
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *level points to an interrupt active level buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *level pointer to an interrupt active level buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt active level failed
@@ -593,8 +593,8 @@ uint8_t uvis25_get_interrupt_active_level(uvis25_handle_t *handle, uvis25_interr
 
 /**
  * @brief     set the interrupt pin type
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] pin_type is the interrupt pin type
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] pin_type interrupt pin type
  * @return    status code
  *            - 0 success
  *            - 1 set interrupt pin type failed
@@ -606,8 +606,8 @@ uint8_t uvis25_set_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
 
 /**
  * @brief      get the interrupt pin type
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *pin_type points to an interrupt pin type buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *pin_type pointer to an interrupt pin type buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt pin type failed
@@ -619,8 +619,8 @@ uint8_t uvis25_get_interrupt_pin_type(uvis25_handle_t *handle, uvis25_interrupt_
 
 /**
  * @brief     set the interrupt type
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] type is the interrupt type
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] type interrupt type
  * @return    status code
  *            - 0 success
  *            - 1 set interrupt type failed
@@ -632,8 +632,8 @@ uint8_t uvis25_set_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type
 
 /**
  * @brief      get the interrupt type
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *type points to an interrupt type buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *type pointer to an interrupt type buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt type failed
@@ -645,8 +645,8 @@ uint8_t uvis25_get_interrupt_type(uvis25_handle_t *handle, uvis25_interrupt_type
 
 /**
  * @brief     enable or disable the chip interrupt
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] enable is a bool value
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] enable bool value
  * @return    status code
  *            - 0 success
  *            - 1 set interrupt failed
@@ -658,8 +658,8 @@ uint8_t uvis25_set_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable);
 
 /**
  * @brief      get the chip interrupt status
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *enable points to a bool value buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *enable pointer to a bool value buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt failed
@@ -671,8 +671,8 @@ uint8_t uvis25_get_interrupt(uvis25_handle_t *handle, uvis25_bool_t *enable);
 
 /**
  * @brief     enable or disable latching interrupt
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] enable is a bool value
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] enable bool value
  * @return    status code
  *            - 0 success
  *            - 1 set latch interrupt failed
@@ -684,8 +684,8 @@ uint8_t uvis25_set_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t enable
 
 /**
  * @brief      get the latching interrupt status
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *enable points to a bool value buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *enable pointer to a bool value buffer
  * @return     status code
  *             - 0 success
  *             - 1 get latch interrupt failed
@@ -697,8 +697,8 @@ uint8_t uvis25_get_latch_interrupt(uvis25_handle_t *handle, uvis25_bool_t *enabl
 
 /**
  * @brief     enable or disable the low threshold interrupt
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] enable is a bool value
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] enable bool value
  * @return    status code
  *            - 0 success
  *            - 1 set interrupt low threshold failed
@@ -710,8 +710,8 @@ uint8_t uvis25_set_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_
 
 /**
  * @brief      get the low threshold interrupt status
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *enable points to a bool value buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *enable pointer to a bool value buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt low threshold failed
@@ -723,8 +723,8 @@ uint8_t uvis25_get_interrupt_low_threshold(uvis25_handle_t *handle, uvis25_bool_
 
 /**
  * @brief     enable or disable the high threshold interrupt
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] enable is a bool value
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] enable bool value
  * @return    status code
  *            - 0 success
  *            - 1 set interrupt high threshold failed
@@ -736,8 +736,8 @@ uint8_t uvis25_set_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool
 
 /**
  * @brief      get the high threshold interrupt status
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *enable points to a bool value buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *enable pointer to a bool value buffer
  * @return     status code
  *             - 0 success
  *             - 1 get interrupt high threshold failed
@@ -749,8 +749,8 @@ uint8_t uvis25_get_interrupt_high_threshold(uvis25_handle_t *handle, uvis25_bool
 
 /**
  * @brief     set the interrupt threshold
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] threshold is the interrupt threshold
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] threshold interrupt threshold
  * @return    status code
  *            - 0 success
  *            - 1 set threshold failed
@@ -762,8 +762,8 @@ uint8_t uvis25_set_threshold(uvis25_handle_t *handle, uint8_t threshold);
 
 /**
  * @brief      get the interrupt threshold
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[out] *threshold points to an interrupt threshold buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[out] *threshold pointer to an interrupt threshold buffer
  * @return     status code
  *             - 0 success
  *             - 1 get threshold failed
@@ -775,9 +775,9 @@ uint8_t uvis25_get_threshold(uvis25_handle_t *handle, uint8_t *threshold);
 
 /**
  * @brief      convert a uv index to a raw register data
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[in]  uv is the uv index
- * @param[out] *reg points to a raw register data
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[in]  uv uv index
+ * @param[out] *reg pointer to a raw register data
  * @return     status code
  *             - 0 success
  *             - 1 threshold convert to register failed
@@ -789,9 +789,9 @@ uint8_t uvis25_threshold_convert_to_register(uvis25_handle_t *handle, float uv, 
 
 /**
  * @brief      convert a raw register data to a converted uv index
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[in]  reg is the raw register data
- * @param[out] *uv points to a uv index buffer
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[in]  reg raw register data
+ * @param[out] *uv pointer to a uv index buffer
  * @return     status code
  *             - 0 success
  *             - 1 threshold convert to data failed
@@ -814,10 +814,10 @@ uint8_t uvis25_threshold_convert_to_data(uvis25_handle_t *handle, uint8_t reg, f
 
 /**
  * @brief     set the chip register
- * @param[in] *handle points to a uvis25 handle structure
- * @param[in] reg is the iic register address
- * @param[in] *buf points to a data buffer
- * @param[in] len is the data buffer length
+ * @param[in] *handle pointer to a uvis25 handle structure
+ * @param[in] reg iic register address
+ * @param[in] *buf pointer to a data buffer
+ * @param[in] len data buffer length
  * @return    status code
  *            - 0 success
  *            - 1 write failed
@@ -829,10 +829,10 @@ uint8_t uvis25_set_reg(uvis25_handle_t *handle, uint8_t reg, uint8_t *buf, uint1
 
 /**
  * @brief      get the chip register
- * @param[in]  *handle points to a uvis25 handle structure
- * @param[in]  reg is the iic register address
- * @param[out] *buf points to a data buffer
- * @param[in]  len is the data buffer length
+ * @param[in]  *handle pointer to a uvis25 handle structure
+ * @param[in]  reg iic register address
+ * @param[out] *buf pointer to a data buffer
+ * @param[in]  len data buffer length
  * @return     status code
  *             - 0 success
  *             - 1 read failed

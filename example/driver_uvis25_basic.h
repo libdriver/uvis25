@@ -61,7 +61,7 @@ extern "C"{
 
 /**
  * @brief     basic example init
- * @param[in] interface is the chip interface
+ * @param[in] interface chip interface
  * @return    status code
  *            - 0 success
  *            - 1 init failed
@@ -80,7 +80,7 @@ uint8_t uvis25_basic_deinit(void);
 
 /**
  * @brief      basic example read
- * @param[out] *uv points to a uv index buffer
+ * @param[out] *uv pointer to a uv index buffer
  * @return     status code
  *             - 0 success
  *             - 1 read failed

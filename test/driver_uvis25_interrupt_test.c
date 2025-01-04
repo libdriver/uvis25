@@ -60,9 +60,9 @@ uint8_t uvis25_interrupt_test_irq_handler(void)
 
 /**
  * @brief     interrupt test
- * @param[in] interface is the chip interface
- * @param[in] threshold is the uv threshold
- * @param[in] times is the test times
+ * @param[in] interface chip interface
+ * @param[in] threshold uv threshold
+ * @param[in] times test times
  * @return    status code
  *            - 0 success
  *            - 1 test failed
