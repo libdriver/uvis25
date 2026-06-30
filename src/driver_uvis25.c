@@ -82,6 +82,11 @@ static uint8_t a_uvis25_iic_spi_read(uvis25_handle_t *handle, uint8_t reg, uint8
 {
     if (handle->iic_spi == UVIS25_INTERFACE_IIC)                           /* iic interface */
     {
+        if (len > 1)                                                       /* if length > 1 */
+        {
+            reg |= 1 << 7;                                                 /* set read more than 1 byte */
+        }
+        
         if (handle->iic_read(UVIS25_IIC_ADDRESS, reg, buf, len) != 0)      /* read register */
         {
             return 1;                                                      /* return error */
@@ -125,6 +130,10 @@ static uint8_t a_uvis25_iic_spi_write(uvis25_handle_t *handle, uint8_t reg, uint
 {
     if (handle->iic_spi == UVIS25_INTERFACE_IIC)                            /* iic interface */
     {
+        if (len > 1)                                                        /* if length > 1 */
+        {
+            reg |= 1 << 7;                                                  /* set write more than 1 byte */
+        }
         if (handle->iic_write(UVIS25_IIC_ADDRESS, reg, buf, len) != 0)      /* write register */
         {
             return 1;                                                       /* return error */
@@ -1099,7 +1108,7 @@ uint8_t uvis25_irq_handler(uvis25_handle_t *handle)
        
         return 1;                                                                          /* return error */
     }
-    if ((prev & (1 < 2)) != 0)                                                             /* active */
+    if ((prev & (1 << 2)) != 0)                                                            /* active */
     {
         if (handle->receive_callback != NULL)                                              /* check the callback */
         {

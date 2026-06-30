@@ -490,32 +490,6 @@ uint8_t uvis25_get_boot(uvis25_handle_t *handle, uvis25_boot_mode_t *mode);
 uint8_t uvis25_set_iic(uvis25_handle_t *handle, uvis25_bool_t enable);
 
 /**
- * @brief     enable or disable the chip iic
- * @param[in] *handle pointer to a uvis25 handle structure
- * @param[in] enable bool value
- * @return    status code
- *            - 0 success
- *            - 1 set iic failed
- *            - 2 handle is NULL
- *            - 3 handle is not initialized
- * @note      none
- */
-uint8_t uvis25_set_iic(uvis25_handle_t *handle, uvis25_bool_t enable);
-
-/**
- * @brief      get the chip iic status
- * @param[in]  *handle pointer to a uvis25 handle structure
- * @param[out] *enable pointer to a bool value buffer
- * @return     status code
- *             - 0 success
- *             - 1 get iic failed
- *             - 2 handle is NULL
- *             - 3 handle is not initialized
- * @note       none
- */
-uint8_t uvis25_get_iic(uvis25_handle_t *handle, uvis25_bool_t *enable);
-
-/**
  * @brief      get the chip iic status
  * @param[in]  *handle pointer to a uvis25 handle structure
  * @param[out] *enable pointer to a bool value buffer
